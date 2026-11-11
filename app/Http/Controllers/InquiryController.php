@@ -40,3 +40,4 @@ class InquiryController extends Controller
         return back()->with('success', 'Thank you! Your medical inquiry has been received. Our sales & engineering team in Düsseldorf will contact you promptly.');
     }
 }
+

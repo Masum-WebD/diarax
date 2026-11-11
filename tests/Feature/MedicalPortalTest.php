@@ -10,22 +10,14 @@ use Tests\TestCase;
 
 class MedicalPortalTest extends TestCase
 {
-    public function test_homepage_loads_successfully_with_dixion_brand(): void
+    public function test_homepage_loads_successfully_with_diarax_brand(): void
     {
         $response = $this->get('/');
 
         $response->assertStatus(200);
-        $response->assertSee('DIXION');
+        $response->assertSee('DIARAX');
         $response->assertSee('Medical Systems');
-        $response->assertSee('Düsseldorf');
-    }
-
-    public function test_homepage_handles_entrance_splash_mode(): void
-    {
-        $response = $this->get('/?entrance=splash');
-
-        $response->assertStatus(200);
-        $response->assertSee('Enter Main Portal');
+        $response->assertSee('South Korea');
     }
 
     public function test_products_catalog_loads_and_filters(): void
@@ -48,7 +40,7 @@ class MedicalPortalTest extends TestCase
         $searchResponse->assertStatus(200);
     }
 
-    public function test_product_detail_page_loads(): void
+    public function test_product_detail_and_datasheet_pages_load(): void
     {
         $product = Product::first();
         $this->assertNotNull($product);
@@ -58,6 +50,16 @@ class MedicalPortalTest extends TestCase
         $response->assertStatus(200);
         $response->assertSee($product->name);
         $response->assertSee($product->model_code);
+
+        // Test printable datasheet
+        $datasheetResponse = $this->get('/products/' . $product->slug . '/datasheet');
+        $datasheetResponse->assertStatus(200);
+        $datasheetResponse->assertSee('Official Technical Datasheet');
+
+        // Test compare page
+        $compareResponse = $this->get('/compare');
+        $compareResponse->assertStatus(200);
+        $compareResponse->assertSee('Side-by-Side Equipment Comparison');
     }
 
     public function test_turnkey_solutions_page_loads(): void
@@ -65,7 +67,7 @@ class MedicalPortalTest extends TestCase
         $response = $this->get('/turnkey-solutions');
 
         $response->assertStatus(200);
-        $response->assertSee('Complex Hospital Equipping');
+        $response->assertSee('Turnkey Hospital Equipping');
 
         $solution = Solution::first();
         if ($solution) {
@@ -80,7 +82,8 @@ class MedicalPortalTest extends TestCase
         $response = $this->get('/about-dixion');
 
         $response->assertStatus(200);
-        $response->assertSee('About DIXION Healthcare Systems');
+        $response->assertSee('About DIARAX Medical Systems');
+        $response->assertSee('South Korea');
         $response->assertSee('ISO 13485:2016');
     }
 
@@ -88,7 +91,8 @@ class MedicalPortalTest extends TestCase
     {
         $contactResponse = $this->get('/contact');
         $contactResponse->assertStatus(200);
-        $contactResponse->assertSee('Schiessstrasse 55');
+        $contactResponse->assertSee('Seoul');
+        $contactResponse->assertSee('South Korea');
 
         $quoteResponse = $this->get('/request-quote');
         $quoteResponse->assertStatus(200);

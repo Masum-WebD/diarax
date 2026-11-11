@@ -28,3 +28,4 @@ class Solution extends Model
         'sort_order' => 'integer',
     ];
 }
+

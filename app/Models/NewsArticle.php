@@ -26,3 +26,4 @@ class NewsArticle extends Model
         'is_published' => 'boolean',
     ];
 }
+

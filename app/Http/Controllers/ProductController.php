@@ -91,4 +91,39 @@ class ProductController extends Controller
 
         return view('pages.products.show', compact('product', 'relatedProducts'));
     }
+
+    /**
+     * Display a printable official technical datasheet.
+     */
+    public function datasheet(string $slug): View
+    {
+        $product = Product::with('category')->where('slug', $slug)->firstOrFail();
+        return view('pages.products.datasheet', compact('product'));
+    }
+
+    /**
+     * Compare two or more medical equipment models side by side.
+     */
+    public function compare(Request $request): View
+    {
+        $allProducts = Product::select('id', 'name', 'model_code', 'category_id', 'slug')
+            ->where('status', 'active')
+            ->orderBy('name')
+            ->get();
+
+        $selectedIds = array_filter(explode(',', (string) $request->input('models', '')));
+
+        if (empty($selectedIds)) {
+            // Default to first 2 products for an immediate comparison preview
+            $selectedProducts = Product::with('category')->where('status', 'active')->take(2)->get();
+        } else {
+            $selectedProducts = Product::with('category')
+                ->whereIn('id', $selectedIds)
+                ->where('status', 'active')
+                ->get();
+        }
+
+        return view('pages.products.compare', compact('allProducts', 'selectedProducts'));
+    }
 }
+
