@@ -204,3 +204,4 @@ function submitComparison() {
 }
 </script>
 @endsection
+

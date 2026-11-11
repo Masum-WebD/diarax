@@ -69,16 +69,8 @@
             <div class="flex items-center justify-between h-16">
                 <!-- Brand Logo (Uploaded DIARAX Image) -->
                 <div class="flex-shrink-0 flex items-center">
-                    <a href="{{ route('home') }}" class="flex items-center space-x-2.5 group">
-                        <img src="{{ asset('images/logo.png') }}" alt="DIARAX Logo" class="h-8 sm:h-9 w-auto object-contain group-hover:opacity-90 transition">
-                        <div class="hidden sm:flex flex-col border-l border-slate-200 pl-2.5">
-                            <span class="text-[10px] tracking-wider uppercase font-bold text-blue-800 leading-tight">
-                                Medical Systems
-                            </span>
-                            <span class="text-[9px] tracking-widest uppercase font-semibold text-slate-400">
-                                South Korea
-                            </span>
-                        </div>
+                    <a href="{{ route('home') }}" class="flex items-center group">
+                        <img src="{{ asset('images/logo.png') }}" alt="DIARAX" class="h-6 sm:h-7 w-auto object-contain group-hover:opacity-90 transition">
                     </a>
                 </div>
 

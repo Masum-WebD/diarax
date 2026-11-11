@@ -31,4 +31,12 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::get('/', [AdminController::class, 'index'])->name('dashboard');
     Route::get('/inquiries', [AdminController::class, 'inquiries'])->name('inquiries');
     Route::post('/inquiries/{id}/status', [AdminController::class, 'updateStatus'])->name('inquiries.status');
+    
+    // Product Management CRUD
+    Route::get('/products', [AdminController::class, 'products'])->name('products.index');
+    Route::get('/products/create', [AdminController::class, 'createProduct'])->name('products.create');
+    Route::post('/products', [AdminController::class, 'storeProduct'])->name('products.store');
+    Route::get('/products/{id}/edit', [AdminController::class, 'editProduct'])->name('products.edit');
+    Route::put('/products/{id}', [AdminController::class, 'updateProduct'])->name('products.update');
+    Route::delete('/products/{id}', [AdminController::class, 'destroyProduct'])->name('products.destroy');
 });
