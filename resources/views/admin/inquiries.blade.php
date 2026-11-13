@@ -1,5 +1,8 @@
 @extends('layouts.admin')
 
+@section('title', 'Quotes & Inquiries &bull; DIARAX Admin')
+@section('page_title', 'Quotes & Inquiries')
+
 @section('content')
 <div class="space-y-6">
     <div class="flex items-center justify-between">

@@ -123,18 +123,35 @@ class MedicalPortalTest extends TestCase
 
     public function test_admin_dashboard_and_inquiries_management(): void
     {
-        $response = $this->get('/admin');
-        $response->assertStatus(200);
-        $response->assertSee('Hospital Inquiries');
-        $response->assertSee('Inventory Overview');
+        // Unauthenticated guest should be redirected to login
+        $guestResponse = $this->get('/admin');
+        $guestResponse->assertRedirect('/admin/login');
 
-        $inqResponse = $this->get('/admin/inquiries');
+        // Login page loads successfully
+        $loginResponse = $this->get('/admin/login');
+        $loginResponse->assertStatus(200);
+        $loginResponse->assertSee('Medical Admin Portal');
+
+        // Authenticated admin user access
+        $admin = \App\Models\User::first() ?? \App\Models\User::create([
+            'name' => 'Test Admin',
+            'email' => 'testadmin@diarax.com',
+            'password' => bcrypt('password'),
+        ]);
+
+        $response = $this->actingAs($admin)->get('/admin');
+        $response->assertStatus(200);
+        $response->assertSee('Executive Dashboard');
+        $response->assertSee('Purchases');
+        $response->assertSee('Sales');
+
+        $inqResponse = $this->actingAs($admin)->get('/admin/inquiries');
         $inqResponse->assertStatus(200);
 
         // Test status update
         $inquiry = Inquiry::first();
         if ($inquiry) {
-            $updateResponse = $this->post("/admin/inquiries/{$inquiry->id}/status", [
+            $updateResponse = $this->actingAs($admin)->post("/admin/inquiries/{$inquiry->id}/status", [
                 'status' => 'contacted',
             ]);
             $updateResponse->assertSessionHas('success');
@@ -143,5 +160,30 @@ class MedicalPortalTest extends TestCase
                 'status' => 'contacted',
             ]);
         }
+    }
+
+    public function test_admin_modules_accessible_to_authenticated_user(): void
+    {
+        $admin = \App\Models\User::first();
+
+        // Banners Module
+        $bannersResponse = $this->actingAs($admin)->get('/admin/banners');
+        $bannersResponse->assertStatus(200);
+        $bannersResponse->assertSee('Hero Banners');
+
+        // Products Module
+        $productsResponse = $this->actingAs($admin)->get('/admin/products');
+        $productsResponse->assertStatus(200);
+        $productsResponse->assertSee('Products Catalog');
+
+        // Purchases Module
+        $purchasesResponse = $this->actingAs($admin)->get('/admin/purchases');
+        $purchasesResponse->assertStatus(200);
+        $purchasesResponse->assertSee('Purchases');
+
+        // Sales Module
+        $salesResponse = $this->actingAs($admin)->get('/admin/sales');
+        $salesResponse->assertStatus(200);
+        $salesResponse->assertSee('Sales');
     }
 }

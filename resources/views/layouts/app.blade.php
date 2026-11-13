@@ -28,38 +28,6 @@
 </head>
 <body class="bg-white text-slate-800 antialiased selection:bg-blue-600 selection:text-white flex flex-col min-h-screen">
 
-    @if(!request()->routeIs('home'))
-        <!-- Top Mini Info Bar (Hidden on Homepage as requested) -->
-        <div class="bg-slate-100 text-slate-600 text-xs border-b border-slate-200 sticky top-0 z-50">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="flex items-center justify-between py-1.5 gap-2">
-                    <div class="flex items-center space-x-3 text-[11px] sm:text-xs">
-                        <span class="inline-flex items-center font-medium text-slate-800">
-                            <span class="w-2 h-2 rounded-full bg-emerald-500 inline-block mr-1.5"></span>
-                            <strong>DIARAX</strong> &bull; Seoul, South Korea
-                        </span>
-                        <span class="hidden md:inline-flex items-center text-slate-500">
-                            ISO 13485 &bull; CE &bull; MFDS Korea Certified
-                        </span>
-                    </div>
-
-                    <div class="flex items-center space-x-3 text-[11px] sm:text-xs">
-                        <a href="tel:+8225551234" class="hidden sm:inline-flex items-center text-slate-600 hover:text-blue-700 transition">
-                            +82 2 555 1234
-                        </a>
-                        <a href="mailto:export@diarax.com" class="hidden md:inline-flex items-center text-slate-600 hover:text-blue-700 transition">
-                            export@diarax.com
-                        </a>
-                        <div class="h-3 w-px bg-slate-300 hidden sm:block"></div>
-                        <a href="{{ route('admin.dashboard') }}" class="text-blue-700 hover:text-blue-800 font-semibold">
-                            Admin Portal
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    @endif
-
     <!-- Main Navigation Bar (Clean, Compact, White Theme) -->
     <nav class="bg-white/95 backdrop-blur-md shadow-xs border-b border-slate-200 sticky top-0 z-40">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -251,12 +219,12 @@
         @yield('content')
     </main>
 
-    <!-- Clean White Theme Footer (Certifications Column Removed as requested) -->
+    <!-- Clean White Theme Footer (Address info removed as requested) -->
     <footer class="bg-slate-50 text-slate-700 border-t border-slate-200 pt-12 pb-10 mt-16">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 pb-10 border-b border-slate-200">
                 
-                <!-- Col 1: Brand & South Korea Info -->
+                <!-- Col 1: Brand Info (No address) -->
                 <div class="space-y-3">
                     <div class="flex items-center space-x-2">
                         <img src="{{ asset('images/logo.png') }}" alt="DIARAX Logo" class="h-6 w-auto object-contain">
@@ -264,19 +232,10 @@
                     <p class="text-xs text-slate-500 leading-relaxed max-w-sm">
                         DIARAX Medical Systems &bull; South Korea. Advanced medical equipment manufacturing, surgical tables, anesthesia workstations, and hospital equipping worldwide.
                     </p>
-                    <div class="space-y-1 text-xs text-slate-500 pt-1">
-                        <p class="flex items-center">
-                            <svg class="w-3.5 h-3.5 mr-2 text-blue-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/></svg>
-                            Teheran-ro, Gangnam-gu, Seoul, South Korea
-                        </p>
-                        <p class="flex items-center">
-                            <svg class="w-3.5 h-3.5 mr-2 text-blue-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
-                            Phone: +82 2 555 1234
-                        </p>
-                        <p class="flex items-center">
-                            <svg class="w-3.5 h-3.5 mr-2 text-blue-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
-                            Email: export@diarax.com
-                        </p>
+                    <div class="pt-1">
+                        <span class="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-blue-50 text-blue-700 border border-blue-100">
+                            South Korean Precision Engineering
+                        </span>
                     </div>
                 </div>
 
@@ -304,16 +263,16 @@
                     </ul>
                 </div>
 
-                <!-- Col 4: Corporate Headquarters -->
+                <!-- Col 4: Quality & Compliance (No address) -->
                 <div>
-                    <h4 class="text-xs font-bold uppercase tracking-wider text-slate-900 mb-3">Seoul Headquarters</h4>
-                    <div class="p-3.5 rounded-xl bg-white border border-slate-200 text-xs text-slate-600 space-y-2">
-                        <div class="font-bold text-slate-900">DIARAX Co., Ltd.</div>
+                    <h4 class="text-xs font-bold uppercase tracking-wider text-slate-900 mb-3">Quality & Compliance</h4>
+                    <div class="p-3.5 rounded-xl bg-white border border-slate-200 text-xs text-slate-600 space-y-2 shadow-2xs">
+                        <div class="font-bold text-slate-900">International Medical Standards</div>
                         <p class="text-[11px] text-slate-500 leading-relaxed">
-                            Gangnam Biomedical Valley, Teheran-ro, Seoul, South Korea.
+                            Certified under ISO 13485:2016 quality management systems, European CE directives, and Korea MFDS specifications.
                         </p>
                         <div class="pt-1 text-[11px] text-blue-700 font-semibold">
-                            Global Export Division &bull; MFDS Korea
+                            Global Biomedical Assurance
                         </div>
                     </div>
                 </div>
@@ -325,7 +284,7 @@
                 <p>&copy; {{ date('Y') }} DIARAX Medical Systems &bull; South Korea. All rights reserved.</p>
                 <div class="flex items-center space-x-4">
                     <span class="text-slate-400">South Korean Precision Medical Technology</span>
-                    <a href="{{ route('admin.dashboard') }}" class="hover:text-blue-700">Admin</a>
+                    <a href="{{ route('admin.login') }}" class="text-blue-700 hover:text-blue-800 font-semibold">Admin Portal</a>
                     <a href="{{ route('contact') }}" class="hover:text-blue-700">Privacy</a>
                 </div>
             </div>
