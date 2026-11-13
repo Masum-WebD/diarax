@@ -19,8 +19,12 @@ Route::get('/turnkey-solutions/{slug}', [HomeController::class, 'solutionDetail'
 Route::get('/about', [HomeController::class, 'about'])->name('about');
 Route::get('/about-us', [HomeController::class, 'about'])->name('about.us');
 Route::get('/about-dixion', [HomeController::class, 'about'])->name('about.legacy');
+Route::get('/service-support', [HomeController::class, 'serviceSupport'])->name('service.support');
+Route::get('/downloads', [HomeController::class, 'downloads'])->name('downloads');
 Route::get('/news-events', [HomeController::class, 'news'])->name('news');
+Route::get('/news-gallery', [HomeController::class, 'news'])->name('news.gallery');
 Route::get('/contact', [HomeController::class, 'contact'])->name('contact');
+Route::get('/contact-us', [HomeController::class, 'contact'])->name('contact.us');
 Route::get('/request-quote', [HomeController::class, 'quote'])->name('quote');
 
 // Form Submissions

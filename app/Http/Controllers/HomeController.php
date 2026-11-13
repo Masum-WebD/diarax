@@ -66,6 +66,23 @@ class HomeController extends Controller
     }
 
     /**
+     * Display Service & Support page.
+     */
+    public function serviceSupport(): View
+    {
+        return view('pages.service-support');
+    }
+
+    /**
+     * Display Downloads page.
+     */
+    public function downloads(): View
+    {
+        $products = Product::where('status', 'active')->orderBy('name')->get();
+        return view('pages.downloads', compact('products'));
+    }
+
+    /**
      * Display Turnkey Solutions overview.
      */
     public function solutions(): View
