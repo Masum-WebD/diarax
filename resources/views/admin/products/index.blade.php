@@ -1,7 +1,7 @@
 @extends('layouts.admin')
 
 @section('title', 'Medical Products Management &bull; DIARAX Admin')
-@section('page_title', 'Products Catalog (প্রোডাক্ট মডিউল)')
+@section('page_title', 'Products Catalog')
 
 @section('content')
 <div class="space-y-6">

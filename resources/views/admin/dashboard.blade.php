@@ -26,15 +26,15 @@
         <div class="flex items-center flex-wrap gap-2 text-xs font-semibold">
             <a href="{{ route('admin.sales.index') }}" class="px-3.5 py-2 rounded-xl bg-blue-700 hover:bg-blue-800 text-white transition shadow-2xs flex items-center space-x-1.5">
                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-                <span>New Sale (সেল)</span>
+                <span>New Sale</span>
             </a>
             <a href="{{ route('admin.purchases.index') }}" class="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 transition flex items-center space-x-1.5">
                 <svg class="w-3.5 h-3.5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-                <span>New Purchase (পারসেজ)</span>
+                <span>New Purchase</span>
             </a>
             <a href="{{ route('admin.banners.index') }}" class="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 transition flex items-center space-x-1.5">
                 <svg class="w-3.5 h-3.5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-                <span>Banners (ব্যানার)</span>
+                <span>Banners</span>
             </a>
         </div>
     </div>
@@ -45,7 +45,7 @@
         <!-- 1. Equipment Sales -->
         <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-2xs hover:shadow-sm transition">
             <div class="flex items-center justify-between">
-                <span class="text-xs font-bold uppercase tracking-wider text-slate-500">Equipment Sales (সেল)</span>
+                <span class="text-xs font-bold uppercase tracking-wider text-slate-500">Equipment Sales</span>
                 <span class="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                 </span>
@@ -63,7 +63,7 @@
         <!-- 2. Procurement Purchases -->
         <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-2xs hover:shadow-sm transition">
             <div class="flex items-center justify-between">
-                <span class="text-xs font-bold uppercase tracking-wider text-slate-500">Procurement (পারসেজ)</span>
+                <span class="text-xs font-bold uppercase tracking-wider text-slate-500">Procurement</span>
                 <span class="w-8 h-8 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
                 </span>
@@ -78,7 +78,7 @@
         <!-- 3. Active Products Catalog -->
         <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-2xs hover:shadow-sm transition">
             <div class="flex items-center justify-between">
-                <span class="text-xs font-bold uppercase tracking-wider text-slate-500">Medical Catalog (প্রোডাক্ট)</span>
+                <span class="text-xs font-bold uppercase tracking-wider text-slate-500">Medical Catalog</span>
                 <span class="w-8 h-8 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
                 </span>
@@ -117,7 +117,7 @@
             <div class="bg-white rounded-2xl border border-slate-200 shadow-2xs overflow-hidden">
                 <div class="p-4 sm:p-5 border-b border-slate-100 flex items-center justify-between">
                     <div>
-                        <h3 class="font-bold text-slate-900 text-sm">Recent Equipment Sales (সেল অর্ডার)</h3>
+                        <h3 class="font-bold text-slate-900 text-sm">Recent Equipment Sales</h3>
                         <p class="text-[11px] text-slate-500">Direct hospital procurement and export shipments</p>
                     </div>
                     <a href="{{ route('admin.sales.index') }}" class="text-xs font-bold text-blue-700 hover:text-blue-800">
@@ -222,7 +222,7 @@
             <div class="bg-white rounded-2xl border border-slate-200 shadow-2xs overflow-hidden">
                 <div class="p-4 sm:p-5 border-b border-slate-100 flex items-center justify-between">
                     <div>
-                        <h3 class="font-bold text-slate-900 text-sm">Recent Purchases (পারসেজ)</h3>
+                        <h3 class="font-bold text-slate-900 text-sm">Recent Purchases</h3>
                         <p class="text-[11px] text-slate-500">Component suppliers & raw materials</p>
                     </div>
                     <a href="{{ route('admin.purchases.index') }}" class="text-xs font-bold text-blue-700 hover:text-blue-800">

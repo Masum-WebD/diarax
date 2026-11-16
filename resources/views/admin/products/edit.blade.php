@@ -17,7 +17,7 @@
     </div>
 
     <div class="bg-white rounded-2xl border border-slate-200 p-6 sm:p-8 shadow-2xs">
-        <form action="{{ route('admin.products.update', $product->id) }}" method="POST" class="space-y-4">
+        <form action="{{ route('admin.products.update', $product->id) }}" method="POST" enctype="multipart/form-data" class="space-y-4">
             @csrf
             @method('PUT')
 
@@ -70,9 +70,49 @@
                 <textarea name="description" rows="4" required class="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none bg-slate-50">{{ old('description', $product->description) }}</textarea>
             </div>
 
-            <div>
-                <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">Image URL</label>
-                <input type="url" name="image" value="{{ old('image', $product->image) }}" class="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none bg-slate-50 font-mono">
+            <!-- Image Selection: File Upload OR URL -->
+            <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-3">
+                <div class="flex items-center justify-between">
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-800">
+                        Equipment Image
+                    </label>
+                    <span class="text-[10px] text-slate-400">Leave unchanged or replace</span>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <!-- Option A: File Upload -->
+                    <div class="p-3 bg-white rounded-xl border border-slate-200 space-y-1.5">
+                        <span class="text-[11px] font-bold text-slate-700 block">Option 1: Upload New File</span>
+                        <input 
+                            type="file" 
+                            name="image_file" 
+                            accept="image/*"
+                            onchange="previewImageFile(this, 'product_edit_preview')"
+                            class="block w-full text-xs text-slate-500 file:mr-2 file:py-1 file:px-2.5 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+                        >
+                    </div>
+
+                    <!-- Option B: Image URL -->
+                    <div class="p-3 bg-white rounded-xl border border-slate-200 space-y-1.5">
+                        <span class="text-[11px] font-bold text-slate-700 block">Option 2: Replace via URL</span>
+                        <input 
+                            type="url" 
+                            name="image_url" 
+                            value="{{ old('image_url', $product->image) }}"
+                            placeholder="https://images.unsplash.com/..." 
+                            oninput="previewImageUrl(this.value, 'product_edit_preview')"
+                            class="w-full px-2.5 py-1 text-xs rounded-lg border border-slate-300 focus:ring-1 focus:ring-blue-600 focus:outline-none font-mono"
+                        >
+                    </div>
+                </div>
+
+                <!-- Preview Thumbnail -->
+                <div class="pt-1 flex items-center space-x-3">
+                    <span class="text-[10px] text-slate-500 uppercase tracking-wider font-semibold">Current Image:</span>
+                    <div class="w-20 h-20 rounded-xl bg-slate-200 overflow-hidden border border-slate-300 shadow-2xs">
+                        <img id="product_edit_preview" src="{{ $product->image }}" alt="Preview" class="w-full h-full object-cover">
+                    </div>
+                </div>
             </div>
 
             <div class="flex items-center space-x-6 pt-2">
@@ -99,5 +139,25 @@
     </div>
 
 </div>
+
+@push('scripts')
+<script>
+    function previewImageFile(input, previewId) {
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById(previewId).src = e.target.result;
+            };
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    function previewImageUrl(url, previewId) {
+        if (url && url.length > 5) {
+            document.getElementById(previewId).src = url;
+        }
+    }
+</script>
+@endpush
 @endsection
 

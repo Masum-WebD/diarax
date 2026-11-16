@@ -74,8 +74,8 @@
                             type="email" 
                             autocomplete="email" 
                             required 
-                            value="{{ old('email', 'admin@diarax.com') }}" 
-                            placeholder="admin@diarax.com"
+                            value="{{ old('email') }}" 
+                            placeholder="name@diarax.com"
                             class="block w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-xs text-slate-900 placeholder-slate-400 focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600/20 bg-slate-50 focus:bg-white"
                         >
                     </div>
@@ -92,8 +92,7 @@
                             type="password" 
                             autocomplete="current-password" 
                             required 
-                            value="password"
-                            placeholder="••••••••"
+                            placeholder="Enter your password"
                             class="block w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-xs text-slate-900 placeholder-slate-400 focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600/20 bg-slate-50 focus:bg-white"
                         >
                     </div>
@@ -105,7 +104,6 @@
                             id="remember" 
                             name="remember" 
                             type="checkbox" 
-                            checked
                             class="h-4 w-4 rounded border-slate-300 text-blue-700 focus:ring-blue-600"
                         >
                         <label for="remember" class="ml-2 block text-slate-600 font-medium">
@@ -124,18 +122,6 @@
                     </button>
                 </div>
             </form>
-
-            <!-- Quick Access Credentials Helper for testing -->
-            <div class="mt-6 pt-5 border-t border-slate-100 bg-slate-50/70 p-3.5 rounded-xl border border-slate-200/80">
-                <div class="flex items-center justify-between text-[11px] font-bold text-slate-600 mb-1">
-                    <span>Default Login Credentials</span>
-                    <span class="px-1.5 py-0.5 rounded bg-blue-100 text-blue-700 text-[10px]">Pre-filled</span>
-                </div>
-                <div class="text-[11px] text-slate-500 font-mono space-y-0.5">
-                    <div>Email: <strong class="text-slate-800">admin@diarax.com</strong></div>
-                    <div>Password: <strong class="text-slate-800">password</strong></div>
-                </div>
-            </div>
 
         </div>
 

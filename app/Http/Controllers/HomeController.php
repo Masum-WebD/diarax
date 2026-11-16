@@ -6,6 +6,7 @@ use App\Models\Category;
 use App\Models\Product;
 use App\Models\Solution;
 use App\Models\NewsArticle;
+use App\Models\Banner;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
@@ -41,6 +42,10 @@ class HomeController extends Controller
             ->take(3)
             ->get();
 
+        $banners = Banner::where('status', 'active')
+            ->orderBy('sort_order', 'asc')
+            ->get();
+
         $showEntrance = $request->query('entrance') === 'splash';
 
         return view('pages.home', compact(
@@ -49,6 +54,7 @@ class HomeController extends Controller
             'allProductsForTabs',
             'solutions',
             'latestNews',
+            'banners',
             'showEntrance'
         ));
     }

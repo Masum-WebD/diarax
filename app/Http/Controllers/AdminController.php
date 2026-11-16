@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\Inquiry;
 use App\Models\Product;
 use App\Models\Category;
+use App\Models\Banner;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Str;
 use Illuminate\View\View;
 
 class AdminController extends Controller
@@ -110,42 +112,34 @@ class AdminController extends Controller
     }
 
     /**
+     * Handle image upload from file or external URL.
+     */
+    protected function handleImageUpload(Request $request, string $folder, ?string $currentImage = null): ?string
+    {
+        if ($request->hasFile('image_file')) {
+            $file = $request->file('image_file');
+            $filename = time() . '_' . Str::random(8) . '.' . $file->getClientOriginalExtension();
+            $destination = public_path('uploads/' . $folder);
+            if (!file_exists($destination)) {
+                mkdir($destination, 0755, true);
+            }
+            $file->move($destination, $filename);
+            return asset('uploads/' . $folder . '/' . $filename);
+        }
+
+        if ($request->filled('image_url')) {
+            return $request->input('image_url');
+        }
+
+        return $currentImage;
+    }
+
+    /**
      * Display Banners module.
      */
     public function banners(): View
     {
-        $banners = [
-            [
-                'id' => 1,
-                'badge' => 'South Korean Technology • ISO 13485 • CE • MFDS Korea',
-                'title' => 'South Korean Precision Engineering for Global Healthcare',
-                'subtitle' => 'DIARAX manufactures over 250 advanced medical equipment models across 40 clinical categories.',
-                'image' => 'https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?auto=format&fit=crop&w=1200&q=80',
-                'sort_order' => 1,
-                'status' => 'active',
-                'created_at' => '2026-11-01',
-            ],
-            [
-                'id' => 2,
-                'badge' => 'Surgical Suites & Smart Operating Theatres',
-                'title' => 'Next-Generation Robotic & Electro-Hydraulic Surgery',
-                'subtitle' => 'Engineered for sub-millimeter surgical precision, ergonomic clinical control, and fail-safe patient support.',
-                'image' => 'https://images.unsplash.com/photo-1579684385127-1ef15d508118?auto=format&fit=crop&w=1200&q=80',
-                'sort_order' => 2,
-                'status' => 'active',
-                'created_at' => '2026-11-04',
-            ],
-            [
-                'id' => 3,
-                'badge' => 'Critical Care & Intelligent Life Support',
-                'title' => 'Real-Time Multi-Parameter Monitoring & Anesthesia',
-                'subtitle' => 'Continuous algorithmic patient monitoring and digital anesthesia delivery protecting vulnerable patients.',
-                'image' => 'https://images.unsplash.com/photo-1516549655169-df83a0774514?auto=format&fit=crop&w=1200&q=80',
-                'sort_order' => 3,
-                'status' => 'active',
-                'created_at' => '2026-11-07',
-            ],
-        ];
+        $banners = Banner::orderBy('sort_order', 'asc')->get();
 
         return view('admin.banners.index', compact('banners'));
     }
@@ -155,14 +149,73 @@ class AdminController extends Controller
      */
     public function storeBanner(Request $request): RedirectResponse
     {
-        $request->validate([
+        $validated = $request->validate([
             'title' => 'required|string|max:255',
             'subtitle' => 'required|string|max:500',
             'badge' => 'nullable|string|max:255',
-            'image' => 'nullable|string',
+            'sort_order' => 'nullable|integer',
+            'status' => 'required|in:active,draft',
+            'image_file' => 'nullable|image|max:8192',
+            'image_url' => 'nullable|string|max:1000',
+        ]);
+
+        $image = $this->handleImageUpload($request, 'banners');
+        if (empty($image)) {
+            $image = 'https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?auto=format&fit=crop&w=1920&q=80';
+        }
+
+        Banner::create([
+            'title' => $validated['title'],
+            'subtitle' => $validated['subtitle'],
+            'badge' => $validated['badge'] ?? null,
+            'image' => $image,
+            'sort_order' => $validated['sort_order'] ?? 0,
+            'status' => $validated['status'],
         ]);
 
         return redirect()->route('admin.banners.index')->with('success', 'Hero banner slide successfully added!');
+    }
+
+    /**
+     * Update banner slide.
+     */
+    public function updateBanner(Request $request, int $id): RedirectResponse
+    {
+        $banner = Banner::findOrFail($id);
+
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'subtitle' => 'required|string|max:500',
+            'badge' => 'nullable|string|max:255',
+            'sort_order' => 'nullable|integer',
+            'status' => 'required|in:active,draft',
+            'image_file' => 'nullable|image|max:8192',
+            'image_url' => 'nullable|string|max:1000',
+        ]);
+
+        $image = $this->handleImageUpload($request, 'banners', $banner->image);
+
+        $banner->update([
+            'title' => $validated['title'],
+            'subtitle' => $validated['subtitle'],
+            'badge' => $validated['badge'] ?? null,
+            'image' => $image,
+            'sort_order' => $validated['sort_order'] ?? $banner->sort_order,
+            'status' => $validated['status'],
+        ]);
+
+        return redirect()->route('admin.banners.index')->with('success', 'Hero banner slide updated successfully!');
+    }
+
+    /**
+     * Delete banner slide.
+     */
+    public function destroyBanner(int $id): RedirectResponse
+    {
+        $banner = Banner::findOrFail($id);
+        $banner->delete();
+
+        return redirect()->route('admin.banners.index')->with('success', 'Hero banner slide removed.');
     }
 
     /**
@@ -213,14 +266,18 @@ class AdminController extends Controller
             'tagline' => 'nullable|string|max:255',
             'short_description' => 'required|string|max:500',
             'description' => 'required|string',
-            'image' => 'nullable|string',
             'status' => 'required|in:active,draft,discontinued',
+            'image_file' => 'nullable|image|max:8192',
+            'image_url' => 'nullable|string|max:1000',
         ]);
 
-        $validated['slug'] = \Illuminate\Support\Str::slug($validated['name'] . '-' . $validated['model_code']);
-        if (empty($validated['image'])) {
-            $validated['image'] = 'https://images.unsplash.com/photo-1579684385127-1ef15d508118?auto=format&fit=crop&w=800&q=80';
+        $validated['slug'] = Str::slug($validated['name'] . '-' . $validated['model_code']);
+
+        $image = $this->handleImageUpload($request, 'products');
+        if (empty($image)) {
+            $image = 'https://images.unsplash.com/photo-1579684385127-1ef15d508118?auto=format&fit=crop&w=800&q=80';
         }
+        $validated['image'] = $image;
 
         $validated['is_featured'] = $request->has('is_featured');
         $validated['is_new'] = $request->has('is_new');
@@ -254,9 +311,13 @@ class AdminController extends Controller
             'tagline' => 'nullable|string|max:255',
             'short_description' => 'required|string|max:500',
             'description' => 'required|string',
-            'image' => 'nullable|string',
             'status' => 'required|in:active,draft,discontinued',
+            'image_file' => 'nullable|image|max:8192',
+            'image_url' => 'nullable|string|max:1000',
         ]);
+
+        $image = $this->handleImageUpload($request, 'products', $product->image);
+        $validated['image'] = $image;
 
         $validated['is_featured'] = $request->has('is_featured');
         $validated['is_new'] = $request->has('is_new');
@@ -279,7 +340,7 @@ class AdminController extends Controller
     }
 
     /**
-     * Display Purchases module (পারসেজ মডিউল).
+     * Display Purchases module.
      */
     public function purchases(): View
     {
@@ -380,7 +441,7 @@ class AdminController extends Controller
     }
 
     /**
-     * Display Sales module (সেল মডিউল).
+     * Display Sales module.
      */
     public function sales(): View
     {

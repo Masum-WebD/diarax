@@ -284,7 +284,6 @@
                 <p>&copy; {{ date('Y') }} DIARAX Medical Systems &bull; South Korea. All rights reserved.</p>
                 <div class="flex items-center space-x-4">
                     <span class="text-slate-400">South Korean Precision Medical Technology</span>
-                    <a href="{{ route('admin.login') }}" class="text-blue-700 hover:text-blue-800 font-semibold">Admin Portal</a>
                     <a href="{{ route('contact') }}" class="hover:text-blue-700">Privacy</a>
                 </div>
             </div>

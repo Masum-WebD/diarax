@@ -164,7 +164,11 @@ class MedicalPortalTest extends TestCase
 
     public function test_admin_modules_accessible_to_authenticated_user(): void
     {
-        $admin = \App\Models\User::first();
+        $admin = \App\Models\User::first() ?? \App\Models\User::create([
+            'name' => 'Test Admin',
+            'email' => 'testadmin@diarax.com',
+            'password' => bcrypt('password'),
+        ]);
 
         // Banners Module
         $bannersResponse = $this->actingAs($admin)->get('/admin/banners');
@@ -185,5 +189,35 @@ class MedicalPortalTest extends TestCase
         $salesResponse = $this->actingAs($admin)->get('/admin/sales');
         $salesResponse->assertStatus(200);
         $salesResponse->assertSee('Sales');
+
+        // Test Banner Store, Update, and Delete
+        $bannerCreate = $this->actingAs($admin)->post('/admin/banners', [
+            'title' => 'Test Banner Slide',
+            'subtitle' => 'Testing subtitle',
+            'badge' => 'Test Badge',
+            'image_url' => 'https://images.unsplash.com/test.jpg',
+            'sort_order' => 5,
+            'status' => 'active',
+        ]);
+        $bannerCreate->assertSessionHas('success');
+        $this->assertDatabaseHas('banners', ['title' => 'Test Banner Slide']);
+
+        $banner = \App\Models\Banner::where('title', 'Test Banner Slide')->first();
+        $this->assertNotNull($banner);
+
+        $bannerUpdate = $this->actingAs($admin)->put('/admin/banners/' . $banner->id, [
+            'title' => 'Updated Banner Slide',
+            'subtitle' => 'Updated subtitle',
+            'badge' => 'Updated Badge',
+            'image_url' => 'https://images.unsplash.com/updated.jpg',
+            'sort_order' => 5,
+            'status' => 'active',
+        ]);
+        $bannerUpdate->assertSessionHas('success');
+        $this->assertDatabaseHas('banners', ['title' => 'Updated Banner Slide']);
+
+        $bannerDelete = $this->actingAs($admin)->delete('/admin/banners/' . $banner->id);
+        $bannerDelete->assertSessionHas('success');
+        $this->assertDatabaseMissing('banners', ['title' => 'Updated Banner Slide']);
     }
 }

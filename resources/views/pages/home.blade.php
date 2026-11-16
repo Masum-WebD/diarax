@@ -9,95 +9,50 @@
     
     <!-- Slides Container -->
     <div class="relative w-full h-[440px] sm:h-[480px] lg:h-[520px]">
-        
-        <!-- Slide 1 -->
-        <div class="banner-slide absolute inset-0 transition-opacity duration-1000 opacity-100 z-10 flex items-center">
-            <img 
-                src="https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?auto=format&fit=crop&w=1920&q=80" 
-                alt="DIARAX South Korea Medical Systems" 
-                class="absolute inset-0 w-full h-full object-cover object-center filter brightness-75 scale-105"
-            >
-            <div class="absolute inset-0 bg-gradient-to-r from-slate-950/90 via-slate-950/75 to-slate-900/40"></div>
-            <div class="relative z-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full py-12">
-                <div class="max-w-2xl space-y-4">
-                    <div class="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-blue-600/30 backdrop-blur-md border border-blue-400/40 text-blue-200 text-xs font-semibold tracking-wide uppercase">
-                        <span class="w-2 h-2 rounded-full bg-blue-400 animate-pulse"></span>
-                        <span>South Korean Technology &bull; ISO 13485 &bull; CE &bull; MFDS Korea</span>
+        @foreach($banners as $index => $banner)
+            <div class="banner-slide absolute inset-0 transition-opacity duration-1000 {{ $index === 0 ? 'opacity-100 z-10' : 'opacity-0 z-0' }} flex items-center">
+                <img 
+                    src="{{ $banner->image }}" 
+                    alt="{{ $banner->title }}" 
+                    class="absolute inset-0 w-full h-full object-cover object-center filter brightness-75 scale-105"
+                >
+                <div class="absolute inset-0 bg-gradient-to-r from-slate-950/90 via-slate-950/75 to-slate-900/40"></div>
+                <div class="relative z-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full py-12">
+                    <div class="max-w-2xl space-y-4">
+                        @if($banner->badge)
+                            <div class="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-blue-600/30 backdrop-blur-md border border-blue-400/40 text-blue-200 text-xs font-semibold tracking-wide uppercase">
+                                <span class="w-2 h-2 rounded-full bg-blue-400 animate-pulse"></span>
+                                <span>{{ $banner->badge }}</span>
+                            </div>
+                        @endif
+                        <h1 class="font-heading text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-white leading-tight">
+                            {{ $banner->title }}
+                        </h1>
+                        <p class="text-sm sm:text-base text-slate-200 leading-relaxed font-normal">
+                            {{ $banner->subtitle }}
+                        </p>
                     </div>
-                    <h1 class="font-heading text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-white leading-tight">
-                        South Korean Precision Engineering for <span class="text-blue-400">Global Healthcare</span>
-                    </h1>
-                    <p class="text-sm sm:text-base text-slate-200 leading-relaxed font-normal">
-                        DIARAX manufactures over 250 advanced medical equipment models across 40 clinical categories — surgical suites, critical care, and anesthesia systems engineered in Seoul, South Korea.
-                    </p>
                 </div>
             </div>
-        </div>
-
-        <!-- Slide 2 -->
-        <div class="banner-slide absolute inset-0 transition-opacity duration-1000 opacity-0 z-0 flex items-center">
-            <img 
-                src="https://images.unsplash.com/photo-1579684385127-1ef15d508118?auto=format&fit=crop&w=1920&q=80" 
-                alt="Surgical Suites & Smart Operating Theatres" 
-                class="absolute inset-0 w-full h-full object-cover object-center filter brightness-75 scale-105"
-            >
-            <div class="absolute inset-0 bg-gradient-to-r from-slate-950/90 via-slate-950/75 to-slate-900/40"></div>
-            <div class="relative z-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full py-12">
-                <div class="max-w-2xl space-y-4">
-                    <div class="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-blue-600/30 backdrop-blur-md border border-blue-400/40 text-blue-200 text-xs font-semibold tracking-wide uppercase">
-                        <span class="w-2 h-2 rounded-full bg-blue-400 animate-pulse"></span>
-                        <span>Surgical Suites & Smart Operating Theatres</span>
-                    </div>
-                    <h2 class="font-heading text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-white leading-tight">
-                        Next-Generation Robotic & <span class="text-blue-400">Electro-Hydraulic Surgery</span>
-                    </h2>
-                    <p class="text-sm sm:text-base text-slate-200 leading-relaxed font-normal">
-                        Engineered for sub-millimeter surgical precision, ergonomic clinical control, and fail-safe patient support in state-of-the-art operating rooms worldwide.
-                    </p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Slide 3 -->
-        <div class="banner-slide absolute inset-0 transition-opacity duration-1000 opacity-0 z-0 flex items-center">
-            <img 
-                src="https://images.unsplash.com/photo-1516549655169-df83a0774514?auto=format&fit=crop&w=1920&q=80" 
-                alt="Critical Care & Life Support" 
-                class="absolute inset-0 w-full h-full object-cover object-center filter brightness-75 scale-105"
-            >
-            <div class="absolute inset-0 bg-gradient-to-r from-slate-950/90 via-slate-950/75 to-slate-900/40"></div>
-            <div class="relative z-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full py-12">
-                <div class="max-w-2xl space-y-4">
-                    <div class="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-blue-600/30 backdrop-blur-md border border-blue-400/40 text-blue-200 text-xs font-semibold tracking-wide uppercase">
-                        <span class="w-2 h-2 rounded-full bg-blue-400 animate-pulse"></span>
-                        <span>Critical Care & Intelligent Life Support</span>
-                    </div>
-                    <h2 class="font-heading text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-white leading-tight">
-                        Real-Time Multi-Parameter <span class="text-blue-400">Monitoring & Anesthesia</span>
-                    </h2>
-                    <p class="text-sm sm:text-base text-slate-200 leading-relaxed font-normal">
-                        Continuous algorithmic patient monitoring and digital anesthesia delivery protecting vulnerable patients across intensive care and recovery units.
-                    </p>
-                </div>
-            </div>
-        </div>
-
+        @endforeach
     </div>
 
     <!-- Navigation Arrows -->
-    <button type="button" onclick="prevBannerSlide()" class="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/40 hover:bg-black/70 text-white backdrop-blur-md border border-white/20 flex items-center justify-center transition z-30" aria-label="Previous Slide">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
-    </button>
-    <button type="button" onclick="nextBannerSlide()" class="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/40 hover:bg-black/70 text-white backdrop-blur-md border border-white/20 flex items-center justify-center transition z-30" aria-label="Next Slide">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-    </button>
+    @if(count($banners) > 1)
+        <button type="button" onclick="prevBannerSlide()" class="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/40 hover:bg-black/70 text-white backdrop-blur-md border border-white/20 flex items-center justify-center transition z-30" aria-label="Previous Slide">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+        </button>
+        <button type="button" onclick="nextBannerSlide()" class="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/40 hover:bg-black/70 text-white backdrop-blur-md border border-white/20 flex items-center justify-center transition z-30" aria-label="Next Slide">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        </button>
 
-    <!-- Slide Indicators -->
-    <div class="absolute bottom-6 left-1/2 -translate-x-1/2 flex items-center space-x-2 z-30 bg-black/40 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/20">
-        <button type="button" onclick="goToBannerSlide(0)" class="banner-dot w-6 h-2 rounded-full bg-white transition-all"></button>
-        <button type="button" onclick="goToBannerSlide(1)" class="banner-dot w-2 h-2 rounded-full bg-white/40 hover:bg-white/70 transition-all"></button>
-        <button type="button" onclick="goToBannerSlide(2)" class="banner-dot w-2 h-2 rounded-full bg-white/40 hover:bg-white/70 transition-all"></button>
-    </div>
+        <!-- Slide Indicators -->
+        <div class="absolute bottom-6 left-1/2 -translate-x-1/2 flex items-center space-x-2 z-30 bg-black/40 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/20">
+            @foreach($banners as $index => $banner)
+                <button type="button" onclick="goToBannerSlide({{ $index }})" class="banner-dot {{ $index === 0 ? 'w-6 bg-white' : 'w-2 bg-white/40 hover:bg-white/70' }} h-2 rounded-full transition-all"></button>
+            @endforeach
+        </div>
+    @endif
 </section>
 
 <!-- 2. Statistics Counter Strip (Dedicated Part Below Banner) -->

@@ -42,11 +42,13 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
     Route::get('/', [AdminController::class, 'index'])->name('dashboard');
     Route::get('/dashboard', [AdminController::class, 'index']);
 
-    // 1. Banners Module (ব্যানার)
+    // 1. Banners Module
     Route::get('/banners', [AdminController::class, 'banners'])->name('banners.index');
     Route::post('/banners', [AdminController::class, 'storeBanner'])->name('banners.store');
+    Route::put('/banners/{id}', [AdminController::class, 'updateBanner'])->name('banners.update');
+    Route::delete('/banners/{id}', [AdminController::class, 'destroyBanner'])->name('banners.destroy');
 
-    // 2. Products Module (প্রোডাক্ট)
+    // 2. Products Module
     Route::get('/products', [AdminController::class, 'products'])->name('products.index');
     Route::get('/products/create', [AdminController::class, 'createProduct'])->name('products.create');
     Route::post('/products', [AdminController::class, 'storeProduct'])->name('products.store');
@@ -54,11 +56,11 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
     Route::put('/products/{id}', [AdminController::class, 'updateProduct'])->name('products.update');
     Route::delete('/products/{id}', [AdminController::class, 'destroyProduct'])->name('products.destroy');
 
-    // 3. Purchases Module (পারসেজ)
+    // 3. Purchases Module
     Route::get('/purchases', [AdminController::class, 'purchases'])->name('purchases.index');
     Route::post('/purchases', [AdminController::class, 'storePurchase'])->name('purchases.store');
 
-    // 4. Sales Module (সেল)
+    // 4. Sales Module
     Route::get('/sales', [AdminController::class, 'sales'])->name('sales.index');
     Route::post('/sales', [AdminController::class, 'storeSale'])->name('sales.store');
 
