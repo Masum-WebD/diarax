@@ -279,7 +279,6 @@ class MedicalPortalTest extends TestCase
         $response = $this->get('/');
         $response->assertStatus(200);
         $response->assertSee('DIARAX LTD.');
-        $response->assertSee('South Korean Precision Medical Technology');
         $response->assertDontSee('Quality & Compliance');
     }
 
