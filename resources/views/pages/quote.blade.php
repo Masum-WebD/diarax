@@ -53,7 +53,7 @@
                     </div>
                     <div>
                         <label class="block text-[11px] font-bold text-slate-700 uppercase tracking-wider mb-1">Country / Destination *</label>
-                        <input type="text" name="country" required placeholder="e.g. Bangladesh" class="w-full px-3.5 py-2 rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-600 text-xs outline-none">
+                        <input type="text" name="country" required placeholder="e.g. South Korea" class="w-full px-3.5 py-2 rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-600 text-xs outline-none">
                     </div>
                 </div>
             </div>

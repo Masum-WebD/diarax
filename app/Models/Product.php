@@ -28,6 +28,9 @@ class Product extends Model
         'is_featured',
         'is_new',
         'status',
+        'certified_quality',
+        'regulatory_standard',
+        'warranty',
     ];
 
     protected $casts = [

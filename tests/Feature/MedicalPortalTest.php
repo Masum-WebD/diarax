@@ -294,5 +294,63 @@ class MedicalPortalTest extends TestCase
         $response->assertDontSee('Print Datasheet');
         $response->assertDontSee('Compare');
         $response->assertDontSee('Clinical Applications:');
+        $response->assertSee('Certified Quality');
+        $response->assertSee('Clinical Approved');
+        $response->assertSee('Warranty');
+    }
+
+    public function test_contact_page_shows_korea_country_placeholder(): void
+    {
+        $response = $this->get('/contact');
+        $response->assertStatus(200);
+        $response->assertSee('Send Us a Direct Message');
+        $response->assertSee('placeholder="e.g. South Korea"', false);
+        $response->assertDontSee('placeholder="e.g. Bangladesh"', false);
+    }
+
+    public function test_admin_can_update_product_badges_and_specifications(): void
+    {
+        $admin = \App\Models\User::first() ?? \App\Models\User::create([
+            'name' => 'Test Admin',
+            'email' => 'testadmin@diarax.com',
+            'password' => bcrypt('password'),
+        ]);
+
+        $product = Product::first();
+        $this->assertNotNull($product);
+
+        $updateResponse = $this->actingAs($admin)->put('/admin/products/' . $product->id, [
+            'name' => $product->name,
+            'model_code' => $product->model_code,
+            'category_id' => $product->category_id,
+            'short_description' => $product->short_description,
+            'description' => '<p>Updated technical specifications with rich description.</p>',
+            'status' => 'active',
+            'certified_quality' => 'ISO 13485:2026',
+            'regulatory_standard' => 'Korea MFDS Class III',
+            'warranty' => '36 Months Warranty',
+            'features_text' => "Advanced Micro-Touch Controller\nCarbon Fibre Tabletop",
+            'spec_keys' => ['Tabletop Elevation', 'Lateral Tilt'],
+            'spec_values' => ['700 - 1100 mm', '±25°'],
+        ]);
+
+        $updateResponse->assertSessionHas('success');
+
+        $freshProduct = $product->fresh();
+        $this->assertEquals('ISO 13485:2026', $freshProduct->certified_quality);
+        $this->assertEquals('Korea MFDS Class III', $freshProduct->regulatory_standard);
+        $this->assertEquals('36 Months Warranty', $freshProduct->warranty);
+        $this->assertContains('Carbon Fibre Tabletop', $freshProduct->features);
+        $this->assertEquals('700 - 1100 mm', $freshProduct->specifications['Tabletop Elevation'] ?? null);
+
+        // Verify public product page renders these dynamic fields
+        $showResponse = $this->get('/products/' . $freshProduct->slug);
+        $showResponse->assertStatus(200);
+        $showResponse->assertSee('ISO 13485:2026');
+        $showResponse->assertSee('Korea MFDS Class III');
+        $showResponse->assertSee('36 Months Warranty');
+        $showResponse->assertSee('Carbon Fibre Tabletop');
+        $showResponse->assertSee('Tabletop Elevation');
+        $showResponse->assertSee('700 - 1100 mm');
     }
 }

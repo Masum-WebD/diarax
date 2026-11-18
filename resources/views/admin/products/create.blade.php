@@ -38,7 +38,7 @@
     </div>
 
     <div class="bg-white rounded-2xl border border-slate-200 p-6 sm:p-8 shadow-2xs">
-        <form id="productForm" action="{{ route('admin.products.store') }}" method="POST" enctype="multipart/form-data" class="space-y-4">
+        <form id="productForm" action="{{ route('admin.products.store') }}" method="POST" enctype="multipart/form-data" class="space-y-5">
             @csrf
 
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -88,6 +88,44 @@
                 <textarea name="short_description" rows="2" required placeholder="Brief clinical summary for catalog cards..." class="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none bg-slate-50">{{ old('short_description') }}</textarea>
             </div>
 
+            <!-- Trust & Quality Badges (Under Image on Product Details Page) -->
+            <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-3">
+                <div class="flex items-center justify-between">
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-800">
+                        Trust & Quality Badges (Under Image)
+                    </label>
+                    <span class="text-[10px] text-slate-400">Dynamic 3 badges shown below image</span>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-700 uppercase tracking-wider mb-1">Certified Quality</label>
+                        <input type="text" name="certified_quality" value="{{ old('certified_quality', 'ISO 13485') }}" placeholder="e.g. ISO 13485" class="w-full px-3 py-1.5 text-xs rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none bg-white">
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-700 uppercase tracking-wider mb-1">Clinical Approved</label>
+                        <input type="text" name="regulatory_standard" value="{{ old('regulatory_standard', 'Korea MFDS') }}" placeholder="e.g. Korea MFDS" class="w-full px-3 py-1.5 text-xs rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none bg-white">
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-700 uppercase tracking-wider mb-1">Global Warranty</label>
+                        <input type="text" name="warranty" value="{{ old('warranty', '24 Months Global') }}" placeholder="e.g. 24 Months Global" class="w-full px-3 py-1.5 text-xs rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none bg-white">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Clinical Highlights (Features List) -->
+            <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-2.5">
+                <div class="flex items-center justify-between">
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-800">
+                        Clinical Highlights (Features List)
+                    </label>
+                    <span class="text-[10px] text-slate-400">Displayed as checklist bullet points</span>
+                </div>
+                <p class="text-[11px] text-slate-500">
+                    Enter key clinical advantages/highlights (one item per line):
+                </p>
+                <textarea name="features_text" rows="4" placeholder="Electro-hydraulic micro-touch wired hand controller with auxiliary backup&#10;350 mm longitudinal sliding for comprehensive 360° full-body C-arm imaging&#10;High load-bearing capacity of up to 300 kg with safety locking mechanism&#10;Premium surgical-grade 304 stainless steel base and column housing" class="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none bg-white leading-relaxed font-mono">{{ old('features_text') }}</textarea>
+            </div>
+
             <!-- Free Rich Text Editor for Full Description -->
             <div>
                 <div class="flex items-center justify-between mb-1">
@@ -98,6 +136,30 @@
                 </div>
                 <input type="hidden" name="description" id="hidden_description" value="{{ old('description') }}">
                 <div id="quill_editor">{!! old('description') !!}</div>
+            </div>
+
+            <!-- Technical Parameters (Specifications Table) -->
+            <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-3">
+                <div class="flex items-center justify-between">
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-800">
+                        Technical Parameters (Specifications Table)
+                    </label>
+                    <button type="button" onclick="addSpecRow()" class="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-bold bg-blue-50 text-blue-700 hover:bg-blue-100 transition">
+                        + Add Parameter Row
+                    </button>
+                </div>
+                <p class="text-[11px] text-slate-500">
+                    Add key-value technical parameters for the specifications table on the product details page:
+                </p>
+                <div id="specs_container" class="space-y-2">
+                    <div class="spec-row flex items-center space-x-2">
+                        <input type="text" name="spec_keys[]" placeholder="Parameter Name (e.g. Table Length)" class="w-1/2 px-3 py-1.5 text-xs rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none bg-white">
+                        <input type="text" name="spec_values[]" placeholder="Value (e.g. 2100 mm ± 50 mm)" class="w-1/2 px-3 py-1.5 text-xs rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none bg-white">
+                        <button type="button" onclick="this.parentElement.remove()" class="p-1.5 text-rose-500 hover:bg-rose-50 rounded-lg" title="Remove parameter">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                        </button>
+                    </div>
+                </div>
             </div>
 
             <!-- Image Selection: File Upload OR URL -->
@@ -196,6 +258,20 @@
             alert('Please provide a full technical description.');
         }
     });
+
+    function addSpecRow() {
+        const container = document.getElementById('specs_container');
+        const div = document.createElement('div');
+        div.className = 'spec-row flex items-center space-x-2';
+        div.innerHTML = `
+            <input type="text" name="spec_keys[]" placeholder="Parameter Name" class="w-1/2 px-3 py-1.5 text-xs rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none bg-white">
+            <input type="text" name="spec_values[]" placeholder="Value" class="w-1/2 px-3 py-1.5 text-xs rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none bg-white">
+            <button type="button" onclick="this.parentElement.remove()" class="p-1.5 text-rose-500 hover:bg-rose-50 rounded-lg" title="Remove parameter">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+            </button>
+        `;
+        container.appendChild(div);
+    }
 
     function previewImageFile(input, previewId) {
         if (input.files && input.files[0]) {

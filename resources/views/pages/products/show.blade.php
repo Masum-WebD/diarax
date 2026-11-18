@@ -40,19 +40,19 @@
                 </div>
             </div>
 
-            <!-- Trust Badges Under Image -->
+            <!-- Trust Badges Under Image (Fully Dynamic) -->
             <div class="grid grid-cols-3 gap-2 text-center text-xs">
                 <div class="p-2.5 bg-slate-50 rounded-xl border border-slate-200 text-slate-600">
-                    <span class="font-bold text-blue-700 block">ISO 13485</span>
+                    <span class="font-bold text-blue-700 block">{{ $product->certified_quality ?: 'ISO 13485' }}</span>
                     Certified Quality
                 </div>
                 <div class="p-2.5 bg-slate-50 rounded-xl border border-slate-200 text-slate-600">
-                    <span class="font-bold text-slate-900 block">Korea MFDS</span>
+                    <span class="font-bold text-slate-900 block">{{ $product->regulatory_standard ?: 'Korea MFDS' }}</span>
                     Clinical Approved
                 </div>
                 <div class="p-2.5 bg-slate-50 rounded-xl border border-slate-200 text-slate-600">
                     <span class="font-bold text-emerald-600 block">Warranty</span>
-                    24 Months Global
+                    {{ $product->warranty ?: '24 Months Global' }}
                 </div>
             </div>
         </div>
@@ -77,12 +77,12 @@
                 {{ $product->short_description }}
             </p>
 
-            <!-- Key Quick Feature Highlights -->
-            @if($product->features)
+            <!-- Key Quick Feature Highlights (Fully Dynamic) -->
+            @if(!empty($product->features) && count($product->features) > 0)
                 <div class="bg-slate-50 rounded-2xl p-4 border border-slate-200 space-y-2">
                     <h4 class="font-heading text-xs font-bold uppercase tracking-wider text-slate-700">Clinical Highlights:</h4>
                     <ul class="space-y-1.5 text-xs text-slate-600">
-                        @foreach(array_slice($product->features, 0, 4) as $feat)
+                        @foreach($product->features as $feat)
                             <li class="flex items-start">
                                 <svg class="w-3.5 h-3.5 text-emerald-600 mr-2 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
                                 <span>{{ $feat }}</span>
@@ -179,7 +179,7 @@
                     </div>
                     <div>
                         <label class="block text-[11px] font-bold text-slate-700 uppercase tracking-wider mb-1">Country / Destination</label>
-                        <input type="text" name="country" placeholder="e.g. South Korea, Bangladesh" class="w-full px-3.5 py-2 rounded-xl bg-white border border-slate-300 text-slate-900 text-xs focus:ring-2 focus:ring-blue-600 outline-none">
+                        <input type="text" name="country" placeholder="e.g. South Korea" class="w-full px-3.5 py-2 rounded-xl bg-white border border-slate-300 text-slate-900 text-xs focus:ring-2 focus:ring-blue-600 outline-none">
                     </div>
                 </div>
 

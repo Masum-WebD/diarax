@@ -270,6 +270,9 @@ class AdminController extends Controller
             'status' => 'required|in:active,draft,discontinued',
             'image_file' => 'nullable|image|max:8192',
             'image_url' => 'nullable|string|max:1000',
+            'certified_quality' => 'nullable|string|max:100',
+            'regulatory_standard' => 'nullable|string|max:100',
+            'warranty' => 'nullable|string|max:100',
         ]);
 
         $validated['slug'] = Str::slug($validated['name'] . '-' . $validated['model_code']);
@@ -282,6 +285,51 @@ class AdminController extends Controller
 
         $validated['is_featured'] = $request->has('is_featured');
         $validated['is_new'] = $request->has('is_new');
+        $validated['certified_quality'] = $validated['certified_quality'] ?? 'ISO 13485';
+        $validated['regulatory_standard'] = $validated['regulatory_standard'] ?? 'Korea MFDS';
+        $validated['warranty'] = $validated['warranty'] ?? '24 Months Global';
+
+        // Process Clinical Highlights (features)
+        $features = [];
+        if ($request->filled('features_text')) {
+            $lines = preg_split('/\r\n|\r|\n/', (string) $request->input('features_text'));
+            foreach ($lines as $line) {
+                $trimmed = trim(ltrim(trim($line), "-•* "));
+                if ($trimmed !== '') {
+                    $features[] = $trimmed;
+                }
+            }
+        } elseif ($request->has('features') && is_array($request->input('features'))) {
+            $features = array_values(array_filter(array_map('trim', $request->input('features'))));
+        }
+        $validated['features'] = $features;
+
+        // Process Technical Parameters (specifications)
+        $specifications = [];
+        if ($request->has('spec_keys') && $request->has('spec_values')) {
+            $keys = (array) $request->input('spec_keys');
+            $vals = (array) $request->input('spec_values');
+            foreach ($keys as $i => $k) {
+                $k = trim($k);
+                $v = trim($vals[$i] ?? '');
+                if ($k !== '' && $v !== '') {
+                    $specifications[$k] = $v;
+                }
+            }
+        } elseif ($request->filled('specifications_text')) {
+            $lines = preg_split('/\r\n|\r|\n/', (string) $request->input('specifications_text'));
+            foreach ($lines as $line) {
+                if (str_contains($line, ':')) {
+                    [$k, $v] = explode(':', $line, 2);
+                    $k = trim($k);
+                    $v = trim($v);
+                    if ($k !== '' && $v !== '') {
+                        $specifications[$k] = $v;
+                    }
+                }
+            }
+        }
+        $validated['specifications'] = $specifications;
 
         Product::create($validated);
 
@@ -315,6 +363,9 @@ class AdminController extends Controller
             'status' => 'required|in:active,draft,discontinued',
             'image_file' => 'nullable|image|max:8192',
             'image_url' => 'nullable|string|max:1000',
+            'certified_quality' => 'nullable|string|max:100',
+            'regulatory_standard' => 'nullable|string|max:100',
+            'warranty' => 'nullable|string|max:100',
         ]);
 
         $image = $this->handleImageUpload($request, 'products', $product->image);
@@ -322,6 +373,54 @@ class AdminController extends Controller
 
         $validated['is_featured'] = $request->has('is_featured');
         $validated['is_new'] = $request->has('is_new');
+        $validated['certified_quality'] = $validated['certified_quality'] ?? $product->certified_quality ?? 'ISO 13485';
+        $validated['regulatory_standard'] = $validated['regulatory_standard'] ?? $product->regulatory_standard ?? 'Korea MFDS';
+        $validated['warranty'] = $validated['warranty'] ?? $product->warranty ?? '24 Months Global';
+
+        // Process Clinical Highlights (features)
+        $features = [];
+        if ($request->filled('features_text')) {
+            $lines = preg_split('/\r\n|\r|\n/', (string) $request->input('features_text'));
+            foreach ($lines as $line) {
+                $trimmed = trim(ltrim(trim($line), "-•* "));
+                if ($trimmed !== '') {
+                    $features[] = $trimmed;
+                }
+            }
+        } elseif ($request->has('features') && is_array($request->input('features'))) {
+            $features = array_values(array_filter(array_map('trim', $request->input('features'))));
+        } else {
+            $features = $product->features ?? [];
+        }
+        $validated['features'] = $features;
+
+        // Process Technical Parameters (specifications)
+        $specifications = [];
+        if ($request->has('spec_keys') && $request->has('spec_values')) {
+            $keys = (array) $request->input('spec_keys');
+            $vals = (array) $request->input('spec_values');
+            foreach ($keys as $i => $k) {
+                $k = trim($k);
+                $v = trim($vals[$i] ?? '');
+                if ($k !== '' && $v !== '') {
+                    $specifications[$k] = $v;
+                }
+            }
+            $validated['specifications'] = $specifications;
+        } elseif ($request->filled('specifications_text')) {
+            $lines = preg_split('/\r\n|\r|\n/', (string) $request->input('specifications_text'));
+            foreach ($lines as $line) {
+                if (str_contains($line, ':')) {
+                    [$k, $v] = explode(':', $line, 2);
+                    $k = trim($k);
+                    $v = trim($v);
+                    if ($k !== '' && $v !== '') {
+                        $specifications[$k] = $v;
+                    }
+                }
+            }
+            $validated['specifications'] = $specifications;
+        }
 
         $product->update($validated);
 
