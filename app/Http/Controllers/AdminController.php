@@ -6,6 +6,7 @@ use App\Models\Inquiry;
 use App\Models\Product;
 use App\Models\Category;
 use App\Models\Banner;
+use App\Models\WelcomePopup;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Str;
@@ -571,5 +572,154 @@ class AdminController extends Controller
         ]);
 
         return back()->with('success', "Inquiry #{$inquiry->id} status updated to {$inquiry->status}.");
+    }
+
+    /**
+     * Display categories management.
+     */
+    public function categories(Request $request): View
+    {
+        $query = Category::withCount('products')->orderBy('sort_order', 'asc');
+
+        if ($request->filled('search')) {
+            $s = $request->input('search');
+            $query->where('name', 'like', "%{$s}%")->orWhere('slug', 'like', "%{$s}%");
+        }
+
+        $categories = $query->get();
+
+        return view('admin.categories.index', compact('categories'));
+    }
+
+    /**
+     * Store new medical category.
+     */
+    public function storeCategory(Request $request): RedirectResponse
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:200',
+            'slug' => 'nullable|string|max:200|unique:categories,slug',
+            'short_description' => 'nullable|string|max:500',
+            'icon' => 'nullable|string|max:100',
+            'sort_order' => 'nullable|integer',
+            'image_file' => 'nullable|image|max:8192',
+            'image_url' => 'nullable|string|max:1000',
+        ]);
+
+        $validated['slug'] = $validated['slug'] ?: Str::slug($validated['name']);
+
+        $origSlug = $validated['slug'];
+        $count = 1;
+        while (Category::where('slug', $validated['slug'])->exists()) {
+            $validated['slug'] = $origSlug . '-' . $count++;
+        }
+
+        $image = $this->handleImageUpload($request, 'categories');
+        $validated['image'] = $image;
+        $validated['is_featured'] = $request->has('is_featured');
+        $validated['sort_order'] = $validated['sort_order'] ?? 0;
+        $validated['icon'] = !empty($validated['icon']) ? $validated['icon'] : 'heroicon-o-cube';
+
+        Category::create($validated);
+
+        return redirect()->route('admin.categories.index')->with('success', "Category '{$validated['name']}' created successfully.");
+    }
+
+    /**
+     * Update existing category.
+     */
+    public function updateCategory(Request $request, int $id): RedirectResponse
+    {
+        $category = Category::findOrFail($id);
+
+        $validated = $request->validate([
+            'name' => 'required|string|max:200',
+            'slug' => 'required|string|max:200|unique:categories,slug,' . $id,
+            'short_description' => 'nullable|string|max:500',
+            'icon' => 'nullable|string|max:100',
+            'sort_order' => 'nullable|integer',
+            'image_file' => 'nullable|image|max:8192',
+            'image_url' => 'nullable|string|max:1000',
+        ]);
+
+        $image = $this->handleImageUpload($request, 'categories', $category->image);
+        $validated['image'] = $image;
+        $validated['is_featured'] = $request->has('is_featured');
+        $validated['sort_order'] = $validated['sort_order'] ?? $category->sort_order;
+        $validated['icon'] = !empty($validated['icon']) ? $validated['icon'] : ($category->icon ?: 'heroicon-o-cube');
+
+        $category->update($validated);
+
+        return redirect()->route('admin.categories.index')->with('success', "Category '{$category->name}' updated successfully.");
+    }
+
+    /**
+     * Delete category.
+     */
+    public function destroyCategory(int $id): RedirectResponse
+    {
+        $category = Category::withCount('products')->findOrFail($id);
+
+        if ($category->products_count > 0) {
+            return redirect()->route('admin.categories.index')->with('error', "Cannot delete category '{$category->name}' because it contains {$category->products_count} active product(s). Please reassign or delete the products first.");
+        }
+
+        $name = $category->name;
+        $category->delete();
+
+        return redirect()->route('admin.categories.index')->with('success', "Category '{$name}' deleted successfully.");
+    }
+
+    /**
+     * Display Welcome Popup settings.
+     */
+    public function popup(): View
+    {
+        $popup = WelcomePopup::first() ?? new WelcomePopup([
+            'title' => 'Welcome to DIARAX Medical Systems',
+            'badge' => 'South Korea Precision Engineering',
+            'message' => 'DIARAX manufactures world-class medical equipment and surgical systems engineered in Seoul. Explore our latest ISO 13485 and CE certified devices for operating theatres, intensive care, and diagnostic medicine.',
+            'image' => 'https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?auto=format&fit=crop&w=800&q=80',
+            'button_text' => 'Explore Equipment Catalog',
+            'button_link' => '/products',
+            'is_active' => true,
+        ]);
+
+        return view('admin.popup.index', compact('popup'));
+    }
+
+    /**
+     * Update Welcome Popup settings.
+     */
+    public function updatePopup(Request $request): RedirectResponse
+    {
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'badge' => 'nullable|string|max:255',
+            'message' => 'required|string|max:1500',
+            'button_text' => 'nullable|string|max:100',
+            'button_link' => 'nullable|string|max:255',
+            'image_file' => 'nullable|image|max:8192',
+            'image_url' => 'nullable|string|max:1000',
+        ]);
+
+        $popup = WelcomePopup::first();
+        $currentImage = $popup ? $popup->image : null;
+        $image = $this->handleImageUpload($request, 'popups', $currentImage);
+
+        if (!$popup) {
+            $popup = new WelcomePopup();
+        }
+
+        $popup->title = $validated['title'];
+        $popup->badge = $validated['badge'] ?? null;
+        $popup->message = $validated['message'];
+        $popup->button_text = $validated['button_text'] ?? null;
+        $popup->button_link = $validated['button_link'] ?? null;
+        $popup->image = $image;
+        $popup->is_active = $request->has('is_active');
+        $popup->save();
+
+        return redirect()->route('admin.popup.index')->with('success', 'Welcome popup announcement settings updated successfully.');
     }
 }

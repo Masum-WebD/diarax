@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Models\Category;
+use App\Models\WelcomePopup;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
@@ -31,8 +32,16 @@ class AppServiceProvider extends ServiceProvider
 
                     $view->with('navCategories', $navCategories);
                 }
+
+                if (Schema::hasTable('welcome_popups')) {
+                    $welcomePopup = WelcomePopup::where('is_active', true)->first();
+                    $view->with('welcomePopup', $welcomePopup);
+                } else {
+                    $view->with('welcomePopup', null);
+                }
             } catch (\Throwable $e) {
                 $view->with('navCategories', collect());
+                $view->with('welcomePopup', null);
             }
         });
     }

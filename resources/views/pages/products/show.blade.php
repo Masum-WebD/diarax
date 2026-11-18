@@ -92,18 +92,14 @@
                 </div>
             @endif
 
-            <!-- Action Buttons (Single Line & Compact) -->
+            <!-- Action Buttons: Request Quotation and Direct Inquiry -->
             <div class="flex items-center gap-2.5 pt-1">
-                <a href="{{ route('quote', ['product_id' => $product->id]) }}" class="flex-1 whitespace-nowrap inline-flex items-center justify-center px-4 py-2.5 rounded-xl font-bold text-xs bg-blue-700 hover:bg-blue-800 text-white shadow-xs transition">
-                    <svg class="w-3.5 h-3.5 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                    Request Quotation
+                <a href="{{ route('quote', ['product_id' => $product->id]) }}" class="flex-1 whitespace-nowrap inline-flex items-center justify-center px-5 py-3 rounded-xl font-bold text-xs bg-blue-700 hover:bg-blue-800 text-white shadow-xs transition">
+                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                    Request Official Quotation
                 </a>
-                <a href="{{ route('products.datasheet', $product->slug) }}" target="_blank" class="whitespace-nowrap inline-flex items-center justify-center px-4 py-2.5 rounded-xl font-bold text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 transition">
-                    <svg class="w-3.5 h-3.5 mr-1.5 text-rose-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
-                    Print Datasheet
-                </a>
-                <a href="{{ route('products.compare', ['models' => $product->id]) }}" class="whitespace-nowrap inline-flex items-center justify-center px-3.5 py-2.5 rounded-xl font-bold text-xs bg-slate-100 hover:bg-blue-50 hover:text-blue-700 text-slate-700 border border-slate-200 transition">
-                    Compare
+                <a href="#quick-inquiry" class="whitespace-nowrap inline-flex items-center justify-center px-4 py-3 rounded-xl font-semibold text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 transition">
+                    Quick Inquiry
                 </a>
             </div>
         </div>
@@ -116,10 +112,14 @@
         </h3>
 
         <div class="prose max-w-none text-slate-600 text-xs sm:text-sm leading-relaxed mb-6">
-            <p>{{ $product->description }}</p>
+            @if(strip_tags($product->description) !== $product->description)
+                {!! $product->description !!}
+            @else
+                <p class="whitespace-pre-line">{{ $product->description }}</p>
+            @endif
         </div>
 
-        @if($product->specifications)
+        @if($product->specifications && count($product->specifications) > 0)
             <div class="mt-6">
                 <h4 class="font-heading text-xs font-bold uppercase tracking-wider text-slate-700 mb-3">
                     Technical Parameters
@@ -139,19 +139,6 @@
                             @endforeach
                         </tbody>
                     </table>
-                </div>
-            </div>
-        @endif
-
-        @if($product->applications)
-            <div class="mt-6 pt-4 border-t border-slate-100">
-                <h4 class="font-heading text-xs font-bold uppercase tracking-wider text-slate-700 mb-2.5">Clinical Applications:</h4>
-                <div class="flex flex-wrap gap-1.5">
-                    @foreach($product->applications as $app)
-                        <span class="px-2.5 py-1 rounded-lg bg-blue-50 text-blue-800 text-xs font-medium border border-blue-100">
-                            {{ $app }}
-                        </span>
-                    @endforeach
                 </div>
             </div>
         @endif

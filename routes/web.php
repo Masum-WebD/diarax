@@ -48,7 +48,13 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
     Route::put('/banners/{id}', [AdminController::class, 'updateBanner'])->name('banners.update');
     Route::delete('/banners/{id}', [AdminController::class, 'destroyBanner'])->name('banners.destroy');
 
-    // 2. Products Module
+    // 2. Categories Module
+    Route::get('/categories', [AdminController::class, 'categories'])->name('categories.index');
+    Route::post('/categories', [AdminController::class, 'storeCategory'])->name('categories.store');
+    Route::put('/categories/{id}', [AdminController::class, 'updateCategory'])->name('categories.update');
+    Route::delete('/categories/{id}', [AdminController::class, 'destroyCategory'])->name('categories.destroy');
+
+    // 3. Products Module
     Route::get('/products', [AdminController::class, 'products'])->name('products.index');
     Route::get('/products/create', [AdminController::class, 'createProduct'])->name('products.create');
     Route::post('/products', [AdminController::class, 'storeProduct'])->name('products.store');
@@ -56,11 +62,15 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
     Route::put('/products/{id}', [AdminController::class, 'updateProduct'])->name('products.update');
     Route::delete('/products/{id}', [AdminController::class, 'destroyProduct'])->name('products.destroy');
 
-    // 3. Purchases Module
+    // 4. Welcome Popup Module
+    Route::get('/popup', [AdminController::class, 'popup'])->name('popup.index');
+    Route::post('/popup', [AdminController::class, 'updatePopup'])->name('popup.update');
+
+    // 5. Purchases Module
     Route::get('/purchases', [AdminController::class, 'purchases'])->name('purchases.index');
     Route::post('/purchases', [AdminController::class, 'storePurchase'])->name('purchases.store');
 
-    // 4. Sales Module
+    // 6. Sales Module
     Route::get('/sales', [AdminController::class, 'sales'])->name('sales.index');
     Route::post('/sales', [AdminController::class, 'storeSale'])->name('sales.store');
 

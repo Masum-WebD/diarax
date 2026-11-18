@@ -1,7 +1,28 @@
 @extends('layouts.admin')
 
-@section('title', 'Edit Equipment &bull; DIARAX Admin')
-@section('page_title', 'Edit Product')
+@section('title', 'Edit ' . $product->model_code . ' &bull; DIARAX Admin')
+@section('page_title', 'Edit Product: ' . $product->model_code)
+
+@push('styles')
+<!-- Free Quill Rich Text Editor CSS -->
+<link href="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.snow.css" rel="stylesheet">
+<style>
+    .ql-toolbar.ql-snow {
+        border-top-left-radius: 0.75rem;
+        border-top-right-radius: 0.75rem;
+        border-color: #cbd5e1;
+        background-color: #f8fafc;
+    }
+    .ql-container.ql-snow {
+        border-bottom-left-radius: 0.75rem;
+        border-bottom-right-radius: 0.75rem;
+        border-color: #cbd5e1;
+        font-family: inherit;
+        font-size: 0.75rem;
+        min-height: 180px;
+    }
+</style>
+@endpush
 
 @section('content')
 <div class="max-w-4xl mx-auto space-y-6">
@@ -9,36 +30,45 @@
     <div class="flex items-center justify-between">
         <div>
             <h2 class="font-heading text-xl font-bold text-slate-900">Edit {{ $product->name }}</h2>
-            <p class="text-xs text-slate-500">Model: <span class="font-mono font-bold text-blue-700">{{ $product->model_code }}</span></p>
+            <p class="text-xs text-slate-500">Update medical equipment specifications, categories, and imagery</p>
         </div>
-        <a href="{{ route('admin.products.index') }}" class="text-xs font-semibold text-blue-700 hover:underline">
-            &larr; Back to Catalog
-        </a>
+        <div class="flex items-center space-x-3">
+            <a href="{{ route('products.show', $product->slug) }}" target="_blank" class="text-xs font-semibold text-slate-600 hover:text-blue-700">
+                View Public Page &rarr;
+            </a>
+            <span class="text-slate-300">&bull;</span>
+            <a href="{{ route('admin.products.index') }}" class="text-xs font-semibold text-blue-700 hover:underline">
+                &larr; Back to Catalog
+            </a>
+        </div>
     </div>
 
     <div class="bg-white rounded-2xl border border-slate-200 p-6 sm:p-8 shadow-2xs">
-        <form action="{{ route('admin.products.update', $product->id) }}" method="POST" enctype="multipart/form-data" class="space-y-4">
+        <form id="productEditForm" action="{{ route('admin.products.update', $product->id) }}" method="POST" enctype="multipart/form-data" class="space-y-4">
             @csrf
             @method('PUT')
 
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                     <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">Equipment Name *</label>
-                    <input type="text" name="name" required value="{{ old('name', $product->name) }}" class="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none bg-slate-50">
+                    <input type="text" name="name" value="{{ old('name', $product->name) }}" required class="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none bg-slate-50">
                 </div>
 
                 <div>
                     <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">Model Code *</label>
-                    <input type="text" name="model_code" required value="{{ old('model_code', $product->model_code) }}" class="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none bg-slate-50 font-mono">
+                    <input type="text" name="model_code" value="{{ old('model_code', $product->model_code) }}" required class="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none bg-slate-50 font-mono">
                 </div>
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">Clinical Department *</label>
+                    <div class="flex items-center justify-between mb-1">
+                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-700">Clinical Category *</label>
+                        <a href="{{ route('admin.categories.index') }}" target="_blank" class="text-[11px] text-blue-700 hover:underline font-semibold">+ Manage Categories</a>
+                    </div>
                     <select name="category_id" required class="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none bg-slate-50">
                         @foreach($categories as $category)
-                            <option value="{{ $category->id }}" {{ $product->category_id == $category->id ? 'selected' : '' }}>
+                            <option value="{{ $category->id }}" {{ (old('category_id', $product->category_id) == $category->id) ? 'selected' : '' }}>
                                 {{ $category->name }}
                             </option>
                         @endforeach
@@ -65,9 +95,16 @@
                 <textarea name="short_description" rows="2" required class="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none bg-slate-50">{{ old('short_description', $product->short_description) }}</textarea>
             </div>
 
+            <!-- Free Quill Rich Text Editor for Full Description -->
             <div>
-                <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">Full Technical Description *</label>
-                <textarea name="description" rows="4" required class="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none bg-slate-50">{{ old('description', $product->description) }}</textarea>
+                <div class="flex items-center justify-between mb-1">
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-700">
+                        Full Technical Description (Rich Text Editor) *
+                    </label>
+                    <span class="text-[10px] text-slate-400">Format headings, lists, bold, and specs</span>
+                </div>
+                <input type="hidden" name="description" id="hidden_description" value="{{ old('description', $product->description) }}">
+                <div id="quill_editor">{!! old('description', $product->description) !!}</div>
             </div>
 
             <!-- Image Selection: File Upload OR URL -->
@@ -98,7 +135,7 @@
                         <input 
                             type="url" 
                             name="image_url" 
-                            value="{{ old('image_url', $product->image) }}"
+                            value="{{ old('image_url', $product->image && str_starts_with($product->image, 'http') ? $product->image : '') }}"
                             placeholder="https://images.unsplash.com/..." 
                             oninput="previewImageUrl(this.value, 'product_edit_preview')"
                             class="w-full px-2.5 py-1 text-xs rounded-lg border border-slate-300 focus:ring-1 focus:ring-blue-600 focus:outline-none font-mono"
@@ -141,7 +178,35 @@
 </div>
 
 @push('scripts')
+<!-- Free Quill Rich Text Editor JS -->
+<script src="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.js"></script>
 <script>
+    // Initialize Quill
+    const quill = new Quill('#quill_editor', {
+        theme: 'snow',
+        placeholder: 'Write comprehensive technical specifications, clinical indications, South Korean manufacturing certifications...',
+        modules: {
+            toolbar: [
+                [{ 'header': [2, 3, 4, false] }],
+                ['bold', 'italic', 'underline'],
+                [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+                ['blockquote', 'link'],
+                ['clean']
+            ]
+        }
+    });
+
+    // Sync Quill content to hidden form input on submit
+    const productEditForm = document.getElementById('productEditForm');
+    productEditForm.addEventListener('submit', function (e) {
+        const hiddenDesc = document.getElementById('hidden_description');
+        hiddenDesc.value = quill.root.innerHTML;
+        if (quill.getText().trim().length === 0) {
+            e.preventDefault();
+            alert('Please provide a full technical description.');
+        }
+    });
+
     function previewImageFile(input, previewId) {
         if (input.files && input.files[0]) {
             const reader = new FileReader();
@@ -160,4 +225,3 @@
 </script>
 @endpush
 @endsection
-

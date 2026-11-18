@@ -222,15 +222,15 @@
     <!-- Clean White Theme Footer (Address info removed as requested) -->
     <footer class="bg-slate-50 text-slate-700 border-t border-slate-200 pt-12 pb-10 mt-16">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 pb-10 border-b border-slate-200">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 pb-10 border-b border-slate-200">
                 
-                <!-- Col 1: Brand Info (No address) -->
+                <!-- Col 1: Brand Info -->
                 <div class="space-y-3">
                     <div class="flex items-center space-x-2">
                         <img src="{{ asset('images/logo.png') }}" alt="DIARAX Logo" class="h-6 w-auto object-contain">
                     </div>
                     <p class="text-xs text-slate-500 leading-relaxed max-w-sm">
-                        DIARAX Medical Systems &bull; South Korea. Advanced medical equipment manufacturing, surgical tables, anesthesia workstations, and hospital equipping worldwide.
+                        DIARAX LTD. &bull; South Korea. Advanced medical equipment manufacturing, surgical tables, anesthesia workstations, and hospital equipping worldwide.
                     </p>
                     <div class="pt-0.5">
                         <a href="mailto:info@diarax.com" class="inline-flex items-center text-xs text-slate-700 hover:text-blue-700 font-semibold transition group">
@@ -245,15 +245,21 @@
                     </div>
                 </div>
 
-                <!-- Col 2: Equipment Divisions -->
+                <!-- Col 2: Dynamic Equipment Categories -->
                 <div>
                     <h4 class="text-xs font-bold uppercase tracking-wider text-slate-900 mb-3">Equipment</h4>
                     <ul class="space-y-2 text-xs text-slate-600">
-                        <li><a href="{{ route('products.index', ['category' => 'surgery-operating-theatres']) }}" class="hover:text-blue-700 transition">Operating Tables & Lights</a></li>
-                        <li><a href="{{ route('products.index', ['category' => 'anesthesia-respiratory']) }}" class="hover:text-blue-700 transition">Anesthesia & Ventilators</a></li>
-                        <li><a href="{{ route('products.index', ['category' => 'intensive-care-neonatology']) }}" class="hover:text-blue-700 transition">Patient Monitors & NICU</a></li>
-                        <li><a href="{{ route('products.index', ['category' => 'diagnostics-imaging']) }}" class="hover:text-blue-700 transition">ECG & Ultrasound</a></li>
-                        <li><a href="{{ route('products.index', ['category' => 'hospital-furniture']) }}" class="hover:text-blue-700 transition">Electric ICU Beds</a></li>
+                        @if(isset($navCategories) && $navCategories->isNotEmpty())
+                            @foreach($navCategories as $cat)
+                                <li>
+                                    <a href="{{ route('products.index', ['category' => $cat->slug]) }}" class="hover:text-blue-700 transition">
+                                        {{ $cat->name }}
+                                    </a>
+                                </li>
+                            @endforeach
+                        @else
+                            <li><a href="{{ route('products.index') }}" class="hover:text-blue-700 transition">All Equipment Categories</a></li>
+                        @endif
                     </ul>
                 </div>
 
@@ -269,25 +275,11 @@
                     </ul>
                 </div>
 
-                <!-- Col 4: Quality & Compliance (No address) -->
-                <div>
-                    <h4 class="text-xs font-bold uppercase tracking-wider text-slate-900 mb-3">Quality & Compliance</h4>
-                    <div class="p-3.5 rounded-xl bg-white border border-slate-200 text-xs text-slate-600 space-y-2 shadow-2xs">
-                        <div class="font-bold text-slate-900">International Medical Standards</div>
-                        <p class="text-[11px] text-slate-500 leading-relaxed">
-                            Certified under ISO 13485:2016 quality management systems, European CE directives, and Korea MFDS specifications.
-                        </p>
-                        <div class="pt-1 text-[11px] text-blue-700 font-semibold">
-                            Global Biomedical Assurance
-                        </div>
-                    </div>
-                </div>
-
             </div>
 
             <!-- Bottom Copyright -->
             <div class="pt-6 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 gap-3">
-                <p>&copy; {{ date('Y') }} DIARAX Medical Systems &bull; South Korea. All rights reserved.</p>
+                <p>&copy; {{ date('Y') }} DIARAX LTD. &bull; South Korea. All rights reserved.</p>
                 <div class="flex items-center space-x-4">
                     <a href="mailto:info@diarax.com" class="text-slate-600 hover:text-blue-700 font-medium flex items-center">
                         <svg class="w-3.5 h-3.5 mr-1 text-blue-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
@@ -299,6 +291,98 @@
             </div>
         </div>
     </footer>
+
+    <!-- Dynamic Welcome Message Popup Modal -->
+    @if(isset($welcomePopup) && $welcomePopup && $welcomePopup->is_active)
+        <div id="welcome-modal-overlay" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs transition-opacity duration-300 hidden opacity-0">
+            <div id="welcome-modal-card" class="bg-white rounded-3xl max-w-lg w-full overflow-hidden shadow-2xl border border-slate-100 transform transition-all duration-300 scale-95 opacity-0">
+                @if($welcomePopup->image)
+                    <div class="relative h-48 sm:h-56 bg-slate-100 overflow-hidden">
+                        <img src="{{ $welcomePopup->image }}" alt="{{ $welcomePopup->title }}" class="w-full h-full object-cover">
+                        <div class="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-slate-950/20 to-transparent"></div>
+                        @if($welcomePopup->badge)
+                            <div class="absolute top-4 left-4">
+                                <span class="px-3 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-wider bg-white/95 text-blue-700 backdrop-blur-xs shadow-xs">
+                                    {{ $welcomePopup->badge }}
+                                </span>
+                            </div>
+                        @endif
+                        <button type="button" onclick="closeWelcomeModal()" class="absolute top-3.5 right-3.5 w-8 h-8 rounded-full bg-black/40 hover:bg-black/60 text-white flex items-center justify-center transition backdrop-blur-xs" aria-label="Close dialog">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                        </button>
+                    </div>
+                @else
+                    <div class="flex items-center justify-between px-6 pt-5 pb-2">
+                        @if($welcomePopup->badge)
+                            <span class="px-3 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-wider bg-blue-50 text-blue-700 border border-blue-100">
+                                {{ $welcomePopup->badge }}
+                            </span>
+                        @else
+                            <span></span>
+                        @endif
+                        <button type="button" onclick="closeWelcomeModal()" class="text-slate-400 hover:text-slate-700 p-1 rounded-lg transition" aria-label="Close dialog">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                        </button>
+                    </div>
+                @endif
+
+                <div class="p-6 sm:p-7 space-y-4">
+                    <div>
+                        <h3 class="font-heading text-lg sm:text-xl font-bold text-slate-900 leading-snug">
+                            {{ $welcomePopup->title }}
+                        </h3>
+                        <p class="text-xs sm:text-sm text-slate-600 leading-relaxed mt-2.5">
+                            {{ $welcomePopup->message }}
+                        </p>
+                    </div>
+
+                    <div class="pt-2 flex flex-col sm:flex-row items-center gap-2.5">
+                        @if($welcomePopup->button_link && $welcomePopup->button_text)
+                            <a href="{{ $welcomePopup->button_link }}" onclick="closeWelcomeModal()" class="w-full sm:w-auto flex-1 text-center px-5 py-2.5 rounded-xl font-bold text-xs bg-blue-700 hover:bg-blue-800 text-white shadow-xs transition">
+                                {{ $welcomePopup->button_text }} &rarr;
+                            </a>
+                        @endif
+                        <button type="button" onclick="closeWelcomeModal()" class="w-full sm:w-auto px-4 py-2.5 rounded-xl font-semibold text-xs text-slate-600 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 transition">
+                            Close
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                // Show modal if not dismissed in current browser session
+                if (!sessionStorage.getItem('diarax_welcome_modal_closed')) {
+                    setTimeout(() => {
+                        const overlay = document.getElementById('welcome-modal-overlay');
+                        const card = document.getElementById('welcome-modal-card');
+                        if (overlay && card) {
+                            overlay.classList.remove('hidden');
+                            setTimeout(() => {
+                                overlay.classList.remove('opacity-0');
+                                card.classList.remove('scale-95', 'opacity-0');
+                                card.classList.add('scale-100', 'opacity-100');
+                            }, 30);
+                        }
+                    }, 500);
+                }
+            });
+
+            function closeWelcomeModal() {
+                const overlay = document.getElementById('welcome-modal-overlay');
+                const card = document.getElementById('welcome-modal-card');
+                if (overlay && card) {
+                    overlay.classList.add('opacity-0');
+                    card.classList.add('scale-95', 'opacity-0');
+                    setTimeout(() => {
+                        overlay.classList.add('hidden');
+                    }, 300);
+                }
+                sessionStorage.setItem('diarax_welcome_modal_closed', 'true');
+            }
+        </script>
+    @endif
 
     <!-- Scripts -->
     <script>

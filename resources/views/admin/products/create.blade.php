@@ -3,6 +3,27 @@
 @section('title', 'Add New Medical Equipment &bull; DIARAX Admin')
 @section('page_title', 'Add New Product')
 
+@push('styles')
+<!-- Free Quill Rich Text Editor CSS -->
+<link href="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.snow.css" rel="stylesheet">
+<style>
+    .ql-toolbar.ql-snow {
+        border-top-left-radius: 0.75rem;
+        border-top-right-radius: 0.75rem;
+        border-color: #cbd5e1;
+        background-color: #f8fafc;
+    }
+    .ql-container.ql-snow {
+        border-bottom-left-radius: 0.75rem;
+        border-bottom-right-radius: 0.75rem;
+        border-color: #cbd5e1;
+        font-family: inherit;
+        font-size: 0.75rem;
+        min-height: 180px;
+    }
+</style>
+@endpush
+
 @section('content')
 <div class="max-w-4xl mx-auto space-y-6">
 
@@ -17,33 +38,38 @@
     </div>
 
     <div class="bg-white rounded-2xl border border-slate-200 p-6 sm:p-8 shadow-2xs">
-        <form action="{{ route('admin.products.store') }}" method="POST" enctype="multipart/form-data" class="space-y-4">
+        <form id="productForm" action="{{ route('admin.products.store') }}" method="POST" enctype="multipart/form-data" class="space-y-4">
             @csrf
 
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                     <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">Equipment Name *</label>
-                    <input type="text" name="name" required placeholder="e.g. DIARAX Operamed 3000" class="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none bg-slate-50">
+                    <input type="text" name="name" value="{{ old('name') }}" required placeholder="e.g. DIARAX Operamed 3000" class="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none bg-slate-50">
                 </div>
 
                 <div>
                     <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">Model Code *</label>
-                    <input type="text" name="model_code" required placeholder="e.g. OP-3000-KR" class="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none bg-slate-50 font-mono">
+                    <input type="text" name="model_code" value="{{ old('model_code') }}" required placeholder="e.g. OP-3000-KR" class="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none bg-slate-50 font-mono">
                 </div>
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">Clinical Department *</label>
+                    <div class="flex items-center justify-between mb-1">
+                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-700">Clinical Category *</label>
+                        <a href="{{ route('admin.categories.index') }}" target="_blank" class="text-[11px] text-blue-700 hover:underline font-semibold">+ Manage Categories</a>
+                    </div>
                     <select name="category_id" required class="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none bg-slate-50">
                         @foreach($categories as $category)
-                            <option value="{{ $category->id }}">{{ $category->name }}</option>
+                            <option value="{{ $category->id }}" {{ old('category_id') == $category->id ? 'selected' : '' }}>
+                                {{ $category->name }}
+                            </option>
                         @endforeach
                     </select>
                 </div>
 
                 <div>
-                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">Status *</label>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">Catalog Status *</label>
                     <select name="status" class="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none bg-slate-50">
                         <option value="active">Active</option>
                         <option value="draft">Draft</option>
@@ -54,17 +80,24 @@
 
             <div>
                 <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">Tagline</label>
-                <input type="text" name="tagline" placeholder="e.g. Electro-hydraulic Multi-Disciplinary Surgical Table" class="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none bg-slate-50">
+                <input type="text" name="tagline" value="{{ old('tagline') }}" placeholder="e.g. Electro-hydraulic Multi-Disciplinary Surgical Table" class="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none bg-slate-50">
             </div>
 
             <div>
                 <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">Short Description *</label>
-                <textarea name="short_description" rows="2" required placeholder="Brief clinical summary for catalog cards..." class="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none bg-slate-50"></textarea>
+                <textarea name="short_description" rows="2" required placeholder="Brief clinical summary for catalog cards..." class="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none bg-slate-50">{{ old('short_description') }}</textarea>
             </div>
 
+            <!-- Free Rich Text Editor for Full Description -->
             <div>
-                <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">Full Technical Description *</label>
-                <textarea name="description" rows="4" required placeholder="Detailed clinical capabilities, technical specs, and South Korean manufacturing standards..." class="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none bg-slate-50"></textarea>
+                <div class="flex items-center justify-between mb-1">
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-700">
+                        Full Technical Description (Rich Text Editor) *
+                    </label>
+                    <span class="text-[10px] text-slate-400">Format headings, lists, bold, and specs</span>
+                </div>
+                <input type="hidden" name="description" id="hidden_description" value="{{ old('description') }}">
+                <div id="quill_editor">{!! old('description') !!}</div>
             </div>
 
             <!-- Image Selection: File Upload OR URL -->
@@ -80,7 +113,7 @@
                         <input 
                             type="file" 
                             name="image_file" 
-                            accept="image/*"
+                            accept="image/*" 
                             onchange="previewImageFile(this, 'product_preview')"
                             class="block w-full text-xs text-slate-500 file:mr-2 file:py-1 file:px-2.5 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
                         >
@@ -92,6 +125,7 @@
                         <input 
                             type="url" 
                             name="image_url" 
+                            value="{{ old('image_url') }}"
                             placeholder="https://images.unsplash.com/..." 
                             oninput="previewImageUrl(this.value, 'product_preview')"
                             class="w-full px-2.5 py-1 text-xs rounded-lg border border-slate-300 focus:ring-1 focus:ring-blue-600 focus:outline-none font-mono"
@@ -134,7 +168,35 @@
 </div>
 
 @push('scripts')
+<!-- Free Quill Rich Text Editor JS -->
+<script src="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.js"></script>
 <script>
+    // Initialize Quill
+    const quill = new Quill('#quill_editor', {
+        theme: 'snow',
+        placeholder: 'Write comprehensive technical specifications, clinical indications, South Korean manufacturing certifications...',
+        modules: {
+            toolbar: [
+                [{ 'header': [2, 3, 4, false] }],
+                ['bold', 'italic', 'underline'],
+                [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+                ['blockquote', 'link'],
+                ['clean']
+            ]
+        }
+    });
+
+    // Sync Quill content to hidden form input on submit
+    const productForm = document.getElementById('productForm');
+    productForm.addEventListener('submit', function (e) {
+        const hiddenDesc = document.getElementById('hidden_description');
+        hiddenDesc.value = quill.root.innerHTML;
+        if (quill.getText().trim().length === 0) {
+            e.preventDefault();
+            alert('Please provide a full technical description.');
+        }
+    });
+
     function previewImageFile(input, previewId) {
         if (input.files && input.files[0]) {
             const reader = new FileReader();
@@ -153,4 +215,3 @@
 </script>
 @endpush
 @endsection
-

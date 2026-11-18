@@ -219,5 +219,80 @@ class MedicalPortalTest extends TestCase
         $bannerDelete = $this->actingAs($admin)->delete('/admin/banners/' . $banner->id);
         $bannerDelete->assertSessionHas('success');
         $this->assertDatabaseMissing('banners', ['title' => 'Updated Banner Slide']);
+
+        // Categories Module Test
+        $categoriesResponse = $this->actingAs($admin)->get('/admin/categories');
+        $categoriesResponse->assertStatus(200);
+        $categoriesResponse->assertSee('Medical Categories Catalog');
+
+        $categoryStore = $this->actingAs($admin)->post('/admin/categories', [
+            'name' => 'Diagnostic MRI & Radiology',
+            'slug' => 'diagnostic-mri-radiology',
+            'sort_order' => 10,
+            'short_description' => 'Advanced MRI scanners and radiological units',
+            'image_url' => 'https://images.unsplash.com/photo-test-mri.jpg',
+            'is_featured' => 1,
+        ]);
+        $categoryStore->assertSessionHas('success');
+        $this->assertDatabaseHas('categories', ['slug' => 'diagnostic-mri-radiology']);
+
+        $cat = Category::where('slug', 'diagnostic-mri-radiology')->first();
+        $this->assertNotNull($cat);
+
+        $categoryUpdate = $this->actingAs($admin)->put('/admin/categories/' . $cat->id, [
+            'name' => 'Diagnostic Imaging & MRI',
+            'slug' => 'diagnostic-imaging-mri',
+            'sort_order' => 12,
+            'short_description' => 'Updated MRI scanners and radiological units',
+            'image_url' => 'https://images.unsplash.com/photo-test-mri-2.jpg',
+            'is_featured' => 1,
+        ]);
+        $categoryUpdate->assertSessionHas('success');
+        $this->assertDatabaseHas('categories', ['slug' => 'diagnostic-imaging-mri']);
+
+        $catDelete = $this->actingAs($admin)->delete('/admin/categories/' . $cat->id);
+        $catDelete->assertSessionHas('success');
+        $this->assertDatabaseMissing('categories', ['slug' => 'diagnostic-imaging-mri']);
+
+        // Welcome Popup Module Test
+        $popupResponse = $this->actingAs($admin)->get('/admin/popup');
+        $popupResponse->assertStatus(200);
+        $popupResponse->assertSee('Website Welcome Popup');
+
+        $popupUpdate = $this->actingAs($admin)->post('/admin/popup', [
+            'title' => 'DIARAX Global Medical Expo 2026',
+            'badge' => 'Seoul Healthcare Summit',
+            'message' => 'Meet our engineers and view live demonstrations of DIARAX medical workstations.',
+            'button_text' => 'Register for Demo',
+            'button_link' => '/contact',
+            'image_url' => 'https://images.unsplash.com/expo.jpg',
+            'is_active' => 1,
+        ]);
+        $popupUpdate->assertSessionHas('success');
+        $this->assertDatabaseHas('welcome_popups', [
+            'title' => 'DIARAX Global Medical Expo 2026',
+        ]);
+    }
+
+    public function test_footer_displays_diarax_ltd_and_dynamic_categories(): void
+    {
+        $response = $this->get('/');
+        $response->assertStatus(200);
+        $response->assertSee('DIARAX LTD.');
+        $response->assertSee('South Korean Precision Medical Technology');
+        $response->assertDontSee('Quality & Compliance');
+    }
+
+    public function test_product_detail_page_excludes_datasheet_compare_and_clinical_apps(): void
+    {
+        $product = Product::first();
+        $this->assertNotNull($product);
+
+        $response = $this->get('/products/' . $product->slug);
+        $response->assertStatus(200);
+        $response->assertSee('Request Official Quotation');
+        $response->assertDontSee('Print Datasheet');
+        $response->assertDontSee('Compare');
+        $response->assertDontSee('Clinical Applications:');
     }
 }
