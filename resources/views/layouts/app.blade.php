@@ -88,8 +88,8 @@
                                             <div class="grid grid-cols-2 gap-3 max-h-[260px] overflow-y-auto pr-1">
                                                 @forelse($navCat->products as $catProd)
                                                     <a href="{{ route('products.show', $catProd->slug) }}" class="flex items-start p-2 rounded-xl hover:bg-blue-50/60 border border-slate-100 hover:border-blue-200 transition group/prod">
-                                                        <div class="w-12 h-12 rounded-lg bg-slate-100 overflow-hidden flex-shrink-0 mr-2.5 border border-slate-200/60">
-                                                            <img src="{{ $catProd->image }}" alt="{{ $catProd->name }}" class="w-full h-full object-cover">
+                                                        <div class="w-12 h-12 rounded-lg bg-slate-100 overflow-hidden flex-shrink-0 mr-2.5 border border-slate-200/60 flex items-center justify-center p-0.5">
+                                                            <img src="{{ $catProd->image }}" alt="{{ $catProd->name }}" class="w-full h-full object-contain">
                                                         </div>
                                                         <div class="min-w-0">
                                                             <span class="text-[10px] font-bold text-blue-700 font-mono block leading-tight">
@@ -229,13 +229,16 @@
                     <div class="flex items-center space-x-2">
                         <img src="{{ asset('images/logo.png') }}" alt="DIARAX Logo" class="h-6 w-auto object-contain">
                     </div>
-                    <p class="text-xs text-slate-500 leading-relaxed max-w-sm">
-                        DIARAX LTD. &bull; South Korea. Advanced medical equipment manufacturing, surgical tables, anesthesia workstations, and hospital equipping worldwide.
-                    </p>
+                    <div class="text-xs text-slate-600 leading-relaxed max-w-sm space-y-1">
+                        <span class="font-bold text-slate-900 block">DIARAX LTD.</span>
+                        <p class="text-[11px] text-slate-500 leading-relaxed">
+                            This Diarax worldwide Advanced medical equipment manufacturing Company. Laboratory Equipment (Hematology Analyzer, POCT Hormone Analyzer, Bio Chemistry Analyzer, Electrolyte Analyzer), Surgical Table, Surgical Light, Surgical Diathermy, Intensive Care Equipments and Medical Furniture Solutions.
+                        </p>
+                    </div>
                     <div class="pt-0.5">
-                        <a href="mailto:info@diarax.com" class="inline-flex items-center text-xs text-slate-700 hover:text-blue-700 font-semibold transition group">
+                        <a href="mailto:info.diarax@gmail.com" class="inline-flex items-center text-xs text-slate-700 hover:text-blue-700 font-semibold transition group">
                             <svg class="w-3.5 h-3.5 mr-1.5 text-blue-700 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
-                            <span>info@diarax.com</span>
+                            <span>info.diarax@gmail.com</span>
                         </a>
                     </div>
                     <div class="pt-1">

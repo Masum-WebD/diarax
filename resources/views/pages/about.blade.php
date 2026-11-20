@@ -7,12 +7,12 @@
 <div class="bg-gradient-to-b from-slate-50 to-white text-slate-900 py-12 lg:py-16 border-b border-slate-200">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="max-w-3xl">
-            <span class="text-xs font-bold uppercase tracking-widest text-blue-700 bg-blue-100 px-3 py-1 rounded-full">Corporate Profile</span>
+            <span class="text-xs font-bold uppercase tracking-widest text-blue-700 bg-blue-100 px-3 py-1 rounded-full">SOUTH KOREA MEDICAL ENGINEERING</span>
             <h1 class="font-heading text-3xl sm:text-4xl lg:text-5xl font-extrabold mt-3 text-slate-900 leading-tight">
-                About DIARAX Medical Systems &bull; South Korea
+                About DIARAX Ltd. &bull; South Korea
             </h1>
-            <p class="text-slate-600 text-sm sm:text-base mt-3 leading-relaxed">
-                Headquartered in Seoul, South Korea, DIARAX is an internationally acclaimed medical equipment manufacturer and healthcare engineering provider delivering smart clinical devices to over 80 countries worldwide.
+            <p class="text-slate-600 text-sm sm:text-base mt-3 leading-relaxed font-semibold">
+                About DIARAX.
             </p>
         </div>
     </div>
@@ -21,28 +21,22 @@
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
     <!-- Story & Mission Grid -->
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center mb-16">
-        <div class="lg:col-span-6 space-y-5">
-            <span class="text-xs font-bold uppercase tracking-widest text-blue-700 bg-blue-50 px-3 py-1 rounded-full">Our Heritage</span>
-            <h2 class="font-heading text-2xl sm:text-3xl font-extrabold text-slate-900">
-                Pioneering South Korean Medical Precision for Over Two Decades
-            </h2>
+        <div class="lg:col-span-6 space-y-4">
             <p class="text-slate-600 text-sm sm:text-base leading-relaxed">
-                Founded in Seoul, South Korea, DIARAX has developed from an engineering research laboratory into a comprehensive international medical technology manufacturer. Our products power operating rooms, intensive care units, and diagnostic imaging centers across hospitals and universities globally.
-            </p>
-            <p class="text-slate-600 text-sm sm:text-base leading-relaxed">
-                South Korea is renowned for its world-leading electronics, semiconductor, and biomedical engineering capabilities. DIARAX leverages this cutting-edge technological ecosystem to create durable, whisper-quiet electro-hydraulic operating tables, intelligent lung-protective anesthesia workstations, and multi-parameter critical care monitors that meet the strictest international clinical standards.
+                Diarax is a South Korean manufacturer of medical equipment and an international trading company. It supplies medical technology and equipment worldwide. The Diarax brand encompasses a range of equipment, including items for surgery, anesthesia, intensive care, diagnostics, and medical furniture. Diarax looks forward to establishing cooperation with more distributors all over the world, and working together to create greater customer value.
             </p>
 
-            <div class="grid grid-cols-2 gap-4 pt-2">
-                <div class="p-4 rounded-xl bg-slate-50 border border-slate-200">
-                    <span class="font-heading text-xl font-bold text-blue-700">Seoul, South Korea</span>
-                    <p class="text-xs text-slate-500 mt-0.5">Corporate HQ & R&D Center (Gangnam-gu)</p>
-                </div>
-                <div class="p-4 rounded-xl bg-slate-50 border border-slate-200">
-                    <span class="font-heading text-xl font-bold text-slate-900">80+ Nations</span>
-                    <p class="text-xs text-slate-500 mt-0.5">Global Partner & Distributor Network</p>
-                </div>
-            </div>
+            <h3 class="font-heading text-base sm:text-lg font-bold text-slate-900 pt-2">
+                Company Vision,
+            </h3>
+
+            <p class="text-slate-600 text-sm sm:text-base leading-relaxed">
+                Diarax provide official catalog emphasizes reliable international logistics, an individual approach to customers and long-term cooperation with partners. Technical questions, equipment inquiries and product documentation can be discussed directly with the diarax sales and service teams.
+            </p>
+
+            <p class="text-slate-600 text-sm sm:text-base leading-relaxed">
+                Diarax combines development, production, sales and technical service within its activities. For an institution or distribution partner, this means cooperation can extend beyond the initial equipment inquiry to product documentation and subsequent technical support.
+            </p>
         </div>
 
         <div class="lg:col-span-6">
@@ -111,7 +105,7 @@
                 <div class="w-9 h-9 rounded-lg bg-blue-100 text-blue-700 flex items-center justify-center font-bold text-xs mb-3">
                     ISO
                 </div>
-                <h4 class="font-heading font-bold text-slate-900 mb-1.5 text-sm">EN ISO 13485:2016</h4>
+                <h4 class="font-heading font-bold text-slate-900 mb-1.5 text-sm">ISO</h4>
                 <p class="text-xs text-slate-600 leading-relaxed">
                     Internationally accredited Medical Device Quality Management System covering biomedical development, sterile assembly, and traceability.
                 </p>
@@ -131,7 +125,7 @@
                 <div class="w-9 h-9 rounded-lg bg-amber-100 text-amber-700 flex items-center justify-center font-bold text-xs mb-3">
                     CE
                 </div>
-                <h4 class="font-heading font-bold text-slate-900 mb-1.5 text-sm">CE 0123 / EU MDR</h4>
+                <h4 class="font-heading font-bold text-slate-900 mb-1.5 text-sm">CE</h4>
                 <p class="text-xs text-slate-600 leading-relaxed">
                     European Union Notified Body audit verification guaranteeing full electromagnetic shielding, patient safety, and clinical durability.
                 </p>

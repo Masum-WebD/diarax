@@ -27,9 +27,9 @@
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-5">
             <div class="p-5 bg-white rounded-2xl border border-slate-200 shadow-xs flex items-start justify-between">
                 <div>
-                    <span class="text-[10px] font-bold uppercase tracking-wider text-blue-700 block mb-1">Corporate Master Catalog</span>
-                    <h4 class="font-heading font-bold text-sm text-slate-900">DIARAX Medical Systems 2026</h4>
-                    <p class="text-[11px] text-slate-500 mt-1">Full 250+ equipment portfolio (PDF, 28 MB)</p>
+                    <span class="text-[10px] font-bold uppercase tracking-wider text-blue-700 block mb-1">DIARAX</span>
+                    <h4 class="font-heading font-bold text-sm text-slate-900">Corporate Master Catalog</h4>
+                    <p class="text-[11px] text-slate-500 mt-1 font-semibold">DIARAX</p>
                     <a href="{{ route('quote', ['type' => 'catalog']) }}" class="mt-3 inline-flex items-center text-xs font-bold text-blue-700 hover:text-blue-800">
                         <svg class="w-3.5 h-3.5 mr-1 text-rose-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
                         Download Master Catalog &rarr;
@@ -39,20 +39,20 @@
 
             <div class="p-5 bg-white rounded-2xl border border-slate-200 shadow-xs flex items-start justify-between">
                 <div>
-                    <span class="text-[10px] font-bold uppercase tracking-wider text-emerald-700 block mb-1">Quality Management</span>
-                    <h4 class="font-heading font-bold text-sm text-slate-900">EN ISO 13485:2016 Certificate</h4>
+                    <span class="text-[10px] font-bold uppercase tracking-wider text-emerald-700 block mb-1">Verification</span>
+                    <h4 class="font-heading font-bold text-sm text-slate-900">Product Check & Certification Management System</h4>
                     <p class="text-[11px] text-slate-500 mt-1">Official TÜV / MFDS certification dossier (PDF)</p>
                     <a href="{{ route('quote', ['type' => 'iso']) }}" class="mt-3 inline-flex items-center text-xs font-bold text-emerald-700 hover:text-emerald-800">
                         <svg class="w-3.5 h-3.5 mr-1 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                        View Certificate &rarr;
+                        Click &rarr;
                     </a>
                 </div>
             </div>
 
             <div class="p-5 bg-white rounded-2xl border border-slate-200 shadow-xs flex items-start justify-between">
                 <div>
-                    <span class="text-[10px] font-bold uppercase tracking-wider text-purple-700 block mb-1">Turnkey Healthcare</span>
-                    <h4 class="font-heading font-bold text-sm text-slate-900">Modular Cleanroom OR Brochure</h4>
+                    <span class="text-[10px] font-bold uppercase tracking-wider text-purple-700 block mb-1">Distributor</span>
+                    <h4 class="font-heading font-bold text-sm text-slate-900">Catalog OR Brochure (PDF)</h4>
                     <p class="text-[11px] text-slate-500 mt-1">Surgical suites & BIM room designs (PDF, 14 MB)</p>
                     <a href="{{ route('quote', ['type' => 'turnkey']) }}" class="mt-3 inline-flex items-center text-xs font-bold text-purple-700 hover:text-purple-800">
                         <svg class="w-3.5 h-3.5 mr-1 text-rose-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
@@ -95,7 +95,7 @@
                                 </td>
                                 <td class="py-3 px-4">
                                     <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-slate-100 text-slate-700">
-                                        ISO 13485 &bull; CE
+                                        ISO &bull; CE
                                     </span>
                                 </td>
                                 <td class="py-3 px-4 text-right">

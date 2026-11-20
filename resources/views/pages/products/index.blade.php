@@ -113,9 +113,9 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
                     @foreach($products as $product)
                         <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-xs hover:shadow-lg hover:border-blue-300 transition duration-200 flex flex-col justify-between group">
-                            <!-- Image -->
-                            <div class="relative h-44 bg-slate-100 overflow-hidden">
-                                <img src="{{ $product->image }}" alt="{{ $product->name }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                            <!-- Image (Image Not Adjustment - Natural containment without cropping) -->
+                            <div class="relative h-48 bg-slate-50 flex items-center justify-center p-3 overflow-hidden border-b border-slate-100">
+                                <img src="{{ $product->image }}" alt="{{ $product->name }}" class="max-h-full max-w-full object-contain group-hover:scale-105 transition-transform duration-300">
                                 <span class="absolute top-2.5 left-2.5 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-white/90 text-slate-900 backdrop-blur-xs shadow-xs">
                                     {{ $product->category->name }}
                                 </span>

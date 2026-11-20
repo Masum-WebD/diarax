@@ -12,7 +12,7 @@
                 Request Medical Equipment Quotation
             </h1>
             <p class="text-slate-600 text-xs sm:text-sm mt-1.5 leading-relaxed">
-                Receive official manufacturer quotations, CIF/FOB export pricing, technical compliance sheets, and delivery schedules from DIARAX Medical Systems, Seoul, South Korea.
+                Receive official manufacturer quotations, CIF/FOB export pricing, technical compliance sheets, and delivery schedules from DIARAX Ltd, Seoul, South Korea.
             </p>
         </div>
     </div>
@@ -44,8 +44,8 @@
 
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-3">
                     <div>
-                        <label class="block text-[11px] font-bold text-slate-700 uppercase tracking-wider mb-1">Phone / Mobile</label>
-                        <input type="text" name="phone" placeholder="+82 / +880..." class="w-full px-3.5 py-2 rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-600 text-xs outline-none">
+                        <label class="block text-[11px] font-bold text-slate-700 uppercase tracking-wider mb-1">PHONE / MOBILE</label>
+                        <input type="text" name="phone" placeholder="PHONE / MOBILE +82..." class="w-full px-3.5 py-2 rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-600 text-xs outline-none">
                     </div>
                     <div>
                         <label class="block text-[11px] font-bold text-slate-700 uppercase tracking-wider mb-1">Clinic / Organization *</label>
@@ -69,7 +69,7 @@
                     <div>
                         <label class="block text-[11px] font-bold text-slate-700 uppercase tracking-wider mb-1">Select Specific Product</label>
                         <select name="product_id" class="w-full px-3.5 py-2 rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-600 text-xs outline-none bg-white">
-                            <option value="">-- Multiple Models / General Turnkey --</option>
+                            <option value="">-- Clear / Select Specific Product --</option>
                             @foreach($products as $prod)
                                 <option value="{{ $prod->id }}" {{ $preselectedProductId == $prod->id ? 'selected' : '' }}>
                                     {{ $prod->name }} ({{ $prod->model_code }})
@@ -96,7 +96,7 @@
                     Submit Formal Quote Request
                 </button>
                 <p class="text-[11px] text-slate-400 mt-2">
-                    Official quote generated and verified by DIARAX Medical Systems &bull; Seoul, South Korea.
+                    Official quote generated and verified by DIARAX Ltd, Seoul, South Korea.
                 </p>
             </div>
         </form>

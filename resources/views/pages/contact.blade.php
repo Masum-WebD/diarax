@@ -9,7 +9,7 @@
         <div class="max-w-3xl">
             <span class="text-xs font-bold uppercase tracking-widest text-blue-700 bg-blue-100 px-3 py-1 rounded-full">Global Headquarters</span>
             <h1 class="font-heading text-2xl sm:text-4xl font-extrabold mt-2 text-slate-900">
-                Contact DIARAX Medical Systems &bull; South Korea
+                Contact DIARAX Ltd
             </h1>
             <p class="text-slate-600 text-xs sm:text-sm mt-1.5 leading-relaxed">
                 Connect directly with our headquarters in Seoul, South Korea for medical device quotations, technical support, authorized distributorships, or turnkey hospital equipping.
@@ -24,7 +24,7 @@
         <div class="lg:col-span-5 space-y-6">
             <div>
                 <h3 class="font-heading text-xl font-bold text-slate-900 mb-1">
-                    DIARAX Medical Systems Korea
+                    DIARAX Ltd
                 </h3>
                 <p class="text-xs text-slate-500 uppercase tracking-wider font-semibold">
                     Global Corporate Headquarters &bull; Seoul, South Korea
@@ -38,7 +38,8 @@
                     </div>
                     <div>
                         <span class="font-bold text-slate-900 block uppercase tracking-wider text-[11px]">Headquarters Address</span>
-                        <span>Teheran-ro, Gangnam-gu<br>Seoul 06236, South Korea</span>
+                        <span>288, Dapsimni-ro, Dongdaemun-gu,<br>Seoul, Korea.</span>
+                        <span class="block text-slate-500 mt-1 font-medium">Tel: +82-2-5382561, E-mail: info.diarax@gmail.com</span>
                     </div>
                 </div>
 
@@ -47,8 +48,8 @@
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
                     </div>
                     <div>
-                        <span class="font-bold text-slate-900 block uppercase tracking-wider text-[11px]">Direct Telephone</span>
-                        <span>Phone: +82 2 555 1234<br>Customer Service: +82 2 555 1235</span>
+                        <span class="font-bold text-slate-900 block uppercase tracking-wider text-[11px]">Telephone Phone</span>
+                        <span>Telephone Phone: +82-2-5382561<br>Customer Service: +82-2-5382561</span>
                     </div>
                 </div>
 
@@ -58,18 +59,9 @@
                     </div>
                     <div>
                         <span class="font-bold text-slate-900 block uppercase tracking-wider text-[11px]">Electronic Inquiries</span>
-                        <span>International Sales: export@diarax.com<br>General: info@diarax.com</span>
+                        <span>E-mail: info.diarax@gmail.com<br>International Sales: export@diarax.com</span>
                     </div>
                 </div>
-            </div>
-
-            <!-- Stylized Map Box -->
-            <div class="p-5 bg-slate-50 text-slate-800 rounded-2xl border border-slate-200">
-                <span class="text-[10px] font-bold uppercase tracking-wider text-blue-700 block">Seoul Biomedical District</span>
-                <h4 class="font-heading font-bold text-sm mt-1">Gangnam-gu &bull; Seoul, South Korea</h4>
-                <p class="text-xs text-slate-500 mt-1 leading-relaxed">
-                    Conveniently accessible from Incheon International Airport (ICN) and adjacent to major Seoul clinical research hospitals.
-                </p>
             </div>
         </div>
 

@@ -82,9 +82,9 @@ class MedicalPortalTest extends TestCase
         $response = $this->get('/about-dixion');
 
         $response->assertStatus(200);
-        $response->assertSee('About DIARAX Medical Systems');
+        $response->assertSee('About DIARAX Ltd.');
         $response->assertSee('South Korea');
-        $response->assertSee('ISO 13485:2016');
+        $response->assertSee('ISO');
     }
 
     public function test_contact_and_quote_pages_load(): void

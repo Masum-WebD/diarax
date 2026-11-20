@@ -96,15 +96,15 @@
             <!-- Left: About Text & Highlights -->
             <div class="lg:col-span-7 space-y-4">
                 <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-blue-50 border border-blue-200 text-blue-700 text-xs font-semibold uppercase tracking-wider">
-                    <span>About DIARAX Medical Systems</span>
+                    <span>About of DIARAX</span>
                 </div>
 
                 <h2 class="font-heading text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight leading-snug">
-                    Pioneering South Korean Medical Technology Since 2004
+                    Pioneering South Korean Medical Technology
                 </h2>
 
                 <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">
-                    Headquartered in Teheran-ro, Gangnam-gu, Seoul, DIARAX is a premier South Korean medical technology manufacturer. We specialize in surgical suite solutions, life support ventilation, patient monitoring, and critical diagnostic systems built to the most stringent international standards.
+                    Headquartered in 288, Dapsimni-ro, Dongdaemun-gu, Seoul, DIARAX is a premier South Korean medical technology manufacturer. We specialize in laboratory suite, surgical suite, life support ventilation, patient monitoring, and critical diagnostic systems built to the most stringent international standards.
                 </p>
 
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2">
@@ -113,7 +113,7 @@
                         <div class="text-[11px] text-slate-500 mt-0.5">Full compliance with Korea MFDS and European CE standards.</div>
                     </div>
                     <div class="p-3 bg-slate-50 rounded-xl border border-slate-200">
-                        <div class="text-xs font-bold text-slate-900">Seoul R&D Facility</div>
+                        <div class="text-xs font-bold text-slate-900">Seoul Facility</div>
                         <div class="text-[11px] text-slate-500 mt-0.5">Cutting-edge biomedical robotics and precision engineering.</div>
                     </div>
                     <div class="p-3 bg-slate-50 rounded-xl border border-slate-200">
@@ -130,9 +130,17 @@
                 </div>
             </div>
 
-            <!-- Right: Facility / Equipment Image Card -->
+            <!-- Right: Facility / Equipment Image Card (Home Page Image Change) -->
             <div class="lg:col-span-5">
                 <div class="relative rounded-2xl overflow-hidden border border-slate-200 shadow-md group">
+                    <img src="https://images.unsplash.com/photo-1582719471384-894fbb16e074?auto=format&fit=crop&w=1000&q=80" alt="Laboratory & Medical Technology" class="w-full h-72 sm:h-80 object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-transparent to-transparent"></div>
+                    <div class="absolute bottom-4 left-4 right-4 text-white">
+                        <span class="text-[10px] font-bold uppercase tracking-widest text-blue-300">Seoul Headquarters</span>
+                        <div class="text-sm font-bold">Advanced Laboratory & Surgical Manufacturing</div>
+                    </div>
+                </div>
+            </div>
                     <img 
                         src="https://images.unsplash.com/photo-1516549655169-df83a0774514?auto=format&fit=crop&w=800&q=80" 
                         alt="DIARAX South Korea Medical Facility" 
