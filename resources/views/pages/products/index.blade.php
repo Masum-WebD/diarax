@@ -46,20 +46,33 @@
 
             <!-- Categories Filter -->
             <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs">
-                <h3 class="font-heading text-xs font-bold text-slate-900 mb-3 uppercase tracking-wider">Clinical Departments</h3>
+                <h3 class="font-heading text-xs font-bold text-slate-900 mb-3 uppercase tracking-wider">Clinical Divisions</h3>
                 <ul class="space-y-1 text-xs">
                     <li>
-                        <a href="{{ route('products.index', array_merge(request()->except('category', 'page'))) }}" class="flex items-center justify-between py-2 px-3 rounded-xl transition {{ !request('category') ? 'bg-blue-50 text-blue-700 font-bold' : 'text-slate-600 hover:bg-slate-50' }}">
+                        <a href="{{ route('products.index', array_merge(request()->except('category', 'subcategory', 'page'))) }}" class="flex items-center justify-between py-2 px-3 rounded-xl transition {{ (!request('category') && !request('subcategory')) ? 'bg-blue-50 text-blue-700 font-bold' : 'text-slate-600 hover:bg-slate-50' }}">
                             <span>All Equipment</span>
                             <span class="text-slate-400 font-normal">({{ \App\Models\Product::count() }})</span>
                         </a>
                     </li>
                     @foreach($categories as $cat)
                         <li>
-                            <a href="{{ route('products.index', array_merge(request()->except('page'), ['category' => $cat->slug])) }}" class="flex items-center justify-between py-2 px-3 rounded-xl transition {{ request('category') === $cat->slug ? 'bg-blue-50 text-blue-700 font-bold' : 'text-slate-600 hover:bg-slate-50' }}">
+                            <a href="{{ route('products.index', array_merge(request()->except('subcategory', 'page'), ['category' => $cat->slug])) }}" class="flex items-center justify-between py-2 px-3 rounded-xl transition {{ (request('category') === $cat->slug && !request('subcategory')) ? 'bg-blue-50 text-blue-700 font-bold' : 'text-slate-700 hover:bg-slate-50 font-medium' }}">
                                 <span>{{ $cat->name }}</span>
                                 <span class="text-slate-400 font-normal">({{ $cat->products_count }})</span>
                             </a>
+                            
+                            @if($cat->subcategories->count() > 0)
+                                <ul class="pl-3 py-1 space-y-1 border-l-2 border-slate-100 ml-3 my-0.5">
+                                    @foreach($cat->subcategories as $sub)
+                                        <li>
+                                            <a href="{{ route('products.index', array_merge(request()->except('page'), ['category' => $cat->slug, 'subcategory' => $sub->slug])) }}" class="flex items-center justify-between py-1.5 px-2.5 rounded-lg text-[11px] transition {{ request('subcategory') === $sub->slug ? 'bg-blue-100/70 text-blue-800 font-bold' : 'text-slate-500 hover:text-blue-700 hover:bg-slate-50' }}">
+                                                <span class="truncate">&bull; {{ $sub->name }}</span>
+                                                <span class="text-slate-400 text-[10px]">({{ $sub->products_count }})</span>
+                                            </a>
+                                        </li>
+                                    @endforeach
+                                </ul>
+                            @endif
                         </li>
                     @endforeach
                 </ul>
@@ -117,7 +130,7 @@
                             <div class="relative h-48 bg-slate-50 flex items-center justify-center p-3 overflow-hidden border-b border-slate-100">
                                 <img src="{{ $product->image }}" alt="{{ $product->name }}" class="max-h-full max-w-full object-contain group-hover:scale-105 transition-transform duration-300">
                                 <span class="absolute top-2.5 left-2.5 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-white/90 text-slate-900 backdrop-blur-xs shadow-xs">
-                                    {{ $product->category->name }}
+                                    {{ $product->subcategory ? $product->subcategory->name : $product->category->name }}
                                 </span>
                                 @if($product->is_new)
                                     <span class="absolute top-2.5 right-2.5 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-emerald-600 text-white">

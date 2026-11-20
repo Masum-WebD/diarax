@@ -14,9 +14,15 @@ class ProductController extends Controller
      */
     public function index(Request $request): View
     {
-        $categories = Category::withCount('products')->orderBy('sort_order')->get();
+        $categories = Category::whereNull('parent_id')
+            ->with(['subcategories' => function ($q) {
+                $q->withCount('products');
+            }])
+            ->withCount('products')
+            ->orderBy('sort_order')
+            ->get();
 
-        $query = Product::with('category')->where('status', 'active');
+        $query = Product::with(['category', 'subcategory'])->where('status', 'active');
 
         // Filter by search keyword
         if ($request->filled('q')) {
@@ -33,8 +39,20 @@ class ProductController extends Controller
         // Filter by category slug
         if ($request->filled('category')) {
             $categorySlug = $request->input('category');
-            $query->whereHas('category', function ($q) use ($categorySlug) {
-                $q->where('slug', $categorySlug);
+            $query->where(function ($q) use ($categorySlug) {
+                $q->whereHas('category', function ($cq) use ($categorySlug) {
+                    $cq->where('slug', $categorySlug);
+                })->orWhereHas('subcategory', function ($sq) use ($categorySlug) {
+                    $sq->where('slug', $categorySlug);
+                });
+            });
+        }
+
+        // Filter specifically by subcategory slug
+        if ($request->filled('subcategory')) {
+            $subSlug = $request->input('subcategory');
+            $query->whereHas('subcategory', function ($q) use ($subSlug) {
+                $q->where('slug', $subSlug);
             });
         }
 
@@ -73,7 +91,12 @@ class ProductController extends Controller
             $currentCategory = Category::where('slug', $request->input('category'))->first();
         }
 
-        return view('pages.products.index', compact('products', 'categories', 'currentCategory'));
+        $currentSubcategory = null;
+        if ($request->filled('subcategory')) {
+            $currentSubcategory = Category::where('slug', $request->input('subcategory'))->first();
+        }
+
+        return view('pages.products.index', compact('products', 'categories', 'currentCategory', 'currentSubcategory'));
     }
 
     /**
@@ -81,7 +104,7 @@ class ProductController extends Controller
      */
     public function show(string $slug): View
     {
-        $product = Product::with('category')->where('slug', $slug)->firstOrFail();
+        $product = Product::with(['category', 'subcategory'])->where('slug', $slug)->firstOrFail();
 
         $relatedProducts = Product::where('category_id', $product->category_id)
             ->where('id', '!=', $product->id)
@@ -97,7 +120,7 @@ class ProductController extends Controller
      */
     public function datasheet(string $slug): View
     {
-        $product = Product::with('category')->where('slug', $slug)->firstOrFail();
+        $product = Product::with(['category', 'subcategory'])->where('slug', $slug)->firstOrFail();
         return view('pages.products.datasheet', compact('product'));
     }
 
@@ -115,9 +138,9 @@ class ProductController extends Controller
 
         if (empty($selectedIds)) {
             // Default to first 2 products for an immediate comparison preview
-            $selectedProducts = Product::with('category')->where('status', 'active')->take(2)->get();
+            $selectedProducts = Product::with(['category', 'subcategory'])->where('status', 'active')->take(2)->get();
         } else {
-            $selectedProducts = Product::with('category')
+            $selectedProducts = Product::with(['category', 'subcategory'])
                 ->whereIn('id', $selectedIds)
                 ->where('status', 'active')
                 ->get();
@@ -126,4 +149,3 @@ class ProductController extends Controller
         return view('pages.products.compare', compact('allProducts', 'selectedProducts'));
     }
 }
-

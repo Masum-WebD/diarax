@@ -60,16 +60,32 @@
                 </div>
             </div>
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div>
                     <div class="flex items-center justify-between mb-1">
                         <label class="block text-xs font-bold uppercase tracking-wider text-slate-700">Clinical Category *</label>
-                        <a href="{{ route('admin.categories.index') }}" target="_blank" class="text-[11px] text-blue-700 hover:underline font-semibold">+ Manage Categories</a>
+                        <a href="{{ route('admin.categories.index') }}" target="_blank" class="text-[11px] text-blue-700 hover:underline font-semibold">+ Manage</a>
                     </div>
-                    <select name="category_id" required class="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none bg-slate-50">
+                    <select id="product_category_id" name="category_id" required onchange="filterSubcategories()" class="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none bg-slate-50">
+                        <option value="">-- Select Category --</option>
                         @foreach($categories as $category)
                             <option value="{{ $category->id }}" {{ (old('category_id', $product->category_id) == $category->id) ? 'selected' : '' }}>
                                 {{ $category->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <div>
+                    <div class="flex items-center justify-between mb-1">
+                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-700">Subcategory (Optional)</label>
+                        <span class="text-[10px] text-slate-400">Line/Segment</span>
+                    </div>
+                    <select id="product_subcategory_id" name="subcategory_id" class="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none bg-slate-50">
+                        <option value="">-- None (Direct Category) --</option>
+                        @foreach($subcategories as $sub)
+                            <option value="{{ $sub->id }}" data-parent="{{ $sub->parent_id }}" {{ (old('subcategory_id', $product->subcategory_id) == $sub->id) ? 'selected' : '' }}>
+                                {{ $sub->name }}
                             </option>
                         @endforeach
                     </select>
@@ -310,6 +326,35 @@
             document.getElementById(previewId).src = url;
         }
     }
+
+    function filterSubcategories() {
+        const catSelect = document.getElementById('product_category_id');
+        const subSelect = document.getElementById('product_subcategory_id');
+        if (!catSelect || !subSelect) return;
+        const selectedCatId = catSelect.value;
+        const currentSubVal = subSelect.value;
+
+        for (let i = 0; i < subSelect.options.length; i++) {
+            const opt = subSelect.options[i];
+            const parentId = opt.getAttribute('data-parent');
+            if (!parentId) {
+                opt.hidden = false;
+                continue;
+            }
+            if (selectedCatId && parentId === selectedCatId) {
+                opt.hidden = false;
+            } else {
+                opt.hidden = true;
+                if (opt.value === currentSubVal) {
+                    subSelect.value = '';
+                }
+            }
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        filterSubcategories();
+    });
 </script>
 @endpush
 @endsection

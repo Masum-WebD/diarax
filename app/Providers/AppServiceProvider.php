@@ -26,9 +26,20 @@ class AppServiceProvider extends ServiceProvider
         View::composer('layouts.app', function ($view) {
             try {
                 if (Schema::hasTable('categories')) {
-                    $navCategories = Category::with(['products' => function ($query) {
-                        $query->where('status', 'active')->orderBy('id', 'asc');
-                    }])->orderBy('sort_order')->get();
+                    $navCategories = Category::whereNull('parent_id')
+                        ->with([
+                            'subcategories' => function ($query) {
+                                $query->orderBy('sort_order', 'asc')
+                                    ->with(['products' => function ($pq) {
+                                        $pq->where('status', 'active')->orderBy('id', 'asc');
+                                    }]);
+                            },
+                            'products' => function ($query) {
+                                $query->where('status', 'active')->orderBy('id', 'asc');
+                            }
+                        ])
+                        ->orderBy('sort_order', 'asc')
+                        ->get();
 
                     $view->with('navCategories', $navCategories);
                 }

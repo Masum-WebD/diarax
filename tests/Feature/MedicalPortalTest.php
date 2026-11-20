@@ -6,6 +6,7 @@ use App\Models\Category;
 use App\Models\Product;
 use App\Models\Solution;
 use App\Models\Inquiry;
+use App\Models\User;
 use Tests\TestCase;
 
 class MedicalPortalTest extends TestCase
@@ -351,5 +352,81 @@ class MedicalPortalTest extends TestCase
         $showResponse->assertSee('Carbon Fibre Tabletop');
         $showResponse->assertSee('Tabletop Elevation');
         $showResponse->assertSee('700 - 1100 mm');
+    }
+
+    /**
+     * Test subcategory admin creation, assignment to product, and header hover menu rendering.
+     */
+    public function test_subcategory_management_and_header_navigation(): void
+    {
+        $admin = User::first();
+        if (!$admin) {
+            $admin = User::factory()->create([
+                'email' => 'admin@diarax.com',
+                'password' => bcrypt('Admin@2026!'),
+                'is_admin' => true,
+            ]);
+        }
+
+        // 1. Create a parent category
+        $parent = Category::create([
+            'name' => 'Cardiovascular Systems',
+            'slug' => 'cardiovascular-systems',
+            'sort_order' => 50,
+            'is_featured' => true,
+        ]);
+
+        // 2. Admin creates a subcategory via POST /admin/categories
+        $subResponse = $this->actingAs($admin)->post('/admin/categories', [
+            'name' => 'Cardiac Defibrillators',
+            'slug' => 'cardiac-defibrillators',
+            'parent_id' => $parent->id,
+            'sort_order' => 1,
+            'is_featured' => 1,
+        ]);
+        $subResponse->assertSessionHas('success');
+        $this->assertDatabaseHas('categories', [
+            'slug' => 'cardiac-defibrillators',
+            'parent_id' => $parent->id,
+        ]);
+
+        $subCat = Category::where('slug', 'cardiac-defibrillators')->first();
+        $this->assertNotNull($subCat);
+        $this->assertEquals($parent->id, $subCat->parent_id);
+
+        // 3. Admin creates product with category and subcategory
+        $prodResponse = $this->actingAs($admin)->post('/admin/products', [
+            'name' => 'DIARAX HeartPulse 900 Biphasic Defibrillator',
+            'model_code' => 'HeartPulse 900',
+            'category_id' => $parent->id,
+            'subcategory_id' => $subCat->id,
+            'short_description' => 'Automated external and manual biphasic cardiac defibrillator.',
+            'description' => '<p>Hospital-grade biphasic 360J defibrillator with pacing.</p>',
+            'status' => 'active',
+        ]);
+        $prodResponse->assertSessionHas('success');
+
+        $this->assertDatabaseHas('products', [
+            'model_code' => 'HeartPulse 900',
+            'category_id' => $parent->id,
+            'subcategory_id' => $subCat->id,
+        ]);
+
+        // 4. Public home page displays category, subcategory, and product model in header mega menu
+        $homeResponse = $this->get('/');
+        $homeResponse->assertStatus(200);
+        $homeResponse->assertSee('Cardiovascular Systems');
+        $homeResponse->assertSee('Cardiac Defibrillators');
+        $homeResponse->assertSee('HeartPulse 900');
+
+        // 5. Public catalog filtering by subcategory
+        $filterResponse = $this->get('/products?subcategory=cardiac-defibrillators');
+        $filterResponse->assertStatus(200);
+        $filterResponse->assertSee('HeartPulse 900');
+
+        // Cleanup
+        Product::where('model_code', 'HeartPulse 900')->delete();
+        $subCat->delete();
+        $parent->delete();
     }
 }

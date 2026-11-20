@@ -224,11 +224,17 @@ class AdminController extends Controller
      */
     public function products(Request $request): View
     {
-        $query = Product::with('category')->orderBy('id', 'desc');
+        $query = Product::with(['category', 'subcategory'])->orderBy('id', 'desc');
 
         if ($request->filled('category')) {
             $query->whereHas('category', function ($q) use ($request) {
                 $q->where('slug', $request->input('category'));
+            });
+        }
+
+        if ($request->filled('subcategory')) {
+            $query->whereHas('subcategory', function ($q) use ($request) {
+                $q->where('slug', $request->input('subcategory'));
             });
         }
 
@@ -241,7 +247,7 @@ class AdminController extends Controller
         }
 
         $products = $query->paginate(12)->withQueryString();
-        $categories = Category::all();
+        $categories = Category::whereNull('parent_id')->with('subcategories')->orderBy('sort_order')->get();
 
         return view('admin.products.index', compact('products', 'categories'));
     }
@@ -251,8 +257,9 @@ class AdminController extends Controller
      */
     public function createProduct(): View
     {
-        $categories = Category::all();
-        return view('admin.products.create', compact('categories'));
+        $categories = Category::whereNull('parent_id')->with('subcategories')->orderBy('sort_order')->get();
+        $subcategories = Category::whereNotNull('parent_id')->orderBy('sort_order')->get();
+        return view('admin.products.create', compact('categories', 'subcategories'));
     }
 
     /**
@@ -264,6 +271,7 @@ class AdminController extends Controller
             'name' => 'required|string|max:200',
             'model_code' => 'required|string|max:100',
             'category_id' => 'required|exists:categories,id',
+            'subcategory_id' => 'nullable|exists:categories,id',
             'tagline' => 'nullable|string|max:255',
             'short_description' => 'required|string|max:500',
             'description' => 'required|string',
@@ -275,6 +283,7 @@ class AdminController extends Controller
             'warranty' => 'nullable|string|max:100',
         ]);
 
+        $validated['subcategory_id'] = !empty($validated['subcategory_id']) ? (int) $validated['subcategory_id'] : null;
         $validated['slug'] = Str::slug($validated['name'] . '-' . $validated['model_code']);
 
         $image = $this->handleImageUpload($request, 'products');
@@ -341,9 +350,10 @@ class AdminController extends Controller
      */
     public function editProduct(int $id): View
     {
-        $product = Product::findOrFail($id);
-        $categories = Category::all();
-        return view('admin.products.edit', compact('product', 'categories'));
+        $product = Product::with(['category', 'subcategory'])->findOrFail($id);
+        $categories = Category::whereNull('parent_id')->with('subcategories')->orderBy('sort_order')->get();
+        $subcategories = Category::whereNotNull('parent_id')->orderBy('sort_order')->get();
+        return view('admin.products.edit', compact('product', 'categories', 'subcategories'));
     }
 
     /**
@@ -357,6 +367,7 @@ class AdminController extends Controller
             'name' => 'required|string|max:200',
             'model_code' => 'required|string|max:100',
             'category_id' => 'required|exists:categories,id',
+            'subcategory_id' => 'nullable|exists:categories,id',
             'tagline' => 'nullable|string|max:255',
             'short_description' => 'required|string|max:500',
             'description' => 'required|string',
@@ -367,6 +378,8 @@ class AdminController extends Controller
             'regulatory_standard' => 'nullable|string|max:100',
             'warranty' => 'nullable|string|max:100',
         ]);
+
+        $validated['subcategory_id'] = !empty($validated['subcategory_id']) ? (int) $validated['subcategory_id'] : null;
 
         $image = $this->handleImageUpload($request, 'products', $product->image);
         $validated['image'] = $image;
@@ -678,7 +691,7 @@ class AdminController extends Controller
      */
     public function categories(Request $request): View
     {
-        $query = Category::withCount('products')->orderBy('sort_order', 'asc');
+        $query = Category::with(['parent', 'subcategories'])->withCount(['products', 'subcategoryProducts'])->orderBy('sort_order', 'asc');
 
         if ($request->filled('search')) {
             $s = $request->input('search');
@@ -686,8 +699,9 @@ class AdminController extends Controller
         }
 
         $categories = $query->get();
+        $parentCategories = Category::whereNull('parent_id')->orderBy('sort_order', 'asc')->get();
 
-        return view('admin.categories.index', compact('categories'));
+        return view('admin.categories.index', compact('categories', 'parentCategories'));
     }
 
     /**
@@ -698,6 +712,7 @@ class AdminController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:200',
             'slug' => 'nullable|string|max:200|unique:categories,slug',
+            'parent_id' => 'nullable|exists:categories,id',
             'short_description' => 'nullable|string|max:500',
             'icon' => 'nullable|string|max:100',
             'sort_order' => 'nullable|integer',
@@ -705,6 +720,7 @@ class AdminController extends Controller
             'image_url' => 'nullable|string|max:1000',
         ]);
 
+        $validated['parent_id'] = !empty($validated['parent_id']) ? (int) $validated['parent_id'] : null;
         $validated['slug'] = $validated['slug'] ?: Str::slug($validated['name']);
 
         $origSlug = $validated['slug'];
@@ -734,12 +750,15 @@ class AdminController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:200',
             'slug' => 'required|string|max:200|unique:categories,slug,' . $id,
+            'parent_id' => 'nullable|exists:categories,id|not_in:' . $id,
             'short_description' => 'nullable|string|max:500',
             'icon' => 'nullable|string|max:100',
             'sort_order' => 'nullable|integer',
             'image_file' => 'nullable|image|max:8192',
             'image_url' => 'nullable|string|max:1000',
         ]);
+
+        $validated['parent_id'] = !empty($validated['parent_id']) ? (int) $validated['parent_id'] : null;
 
         $image = $this->handleImageUpload($request, 'categories', $category->image);
         $validated['image'] = $image;
@@ -757,10 +776,14 @@ class AdminController extends Controller
      */
     public function destroyCategory(int $id): RedirectResponse
     {
-        $category = Category::withCount('products')->findOrFail($id);
+        $category = Category::withCount(['products', 'subcategoryProducts', 'subcategories'])->findOrFail($id);
 
-        if ($category->products_count > 0) {
-            return redirect()->route('admin.categories.index')->with('error', "Cannot delete category '{$category->name}' because it contains {$category->products_count} active product(s). Please reassign or delete the products first.");
+        if ($category->products_count > 0 || $category->subcategory_products_count > 0) {
+            return redirect()->route('admin.categories.index')->with('error', "Cannot delete category '{$category->name}' because it contains active product(s). Please reassign or delete the products first.");
+        }
+
+        if ($category->subcategories_count > 0) {
+            return redirect()->route('admin.categories.index')->with('error', "Cannot delete category '{$category->name}' because it contains {$category->subcategories_count} subcategories. Please remove or reassign them first.");
         }
 
         $name = $category->name;

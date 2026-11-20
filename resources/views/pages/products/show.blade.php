@@ -13,6 +13,10 @@
             <a href="{{ route('products.index') }}" class="hover:text-blue-700">Products</a>
             <span>/</span>
             <a href="{{ route('products.index', ['category' => $product->category->slug]) }}" class="hover:text-blue-700">{{ $product->category->name }}</a>
+            @if($product->subcategory)
+                <span>/</span>
+                <a href="{{ route('products.index', ['category' => $product->category->slug, 'subcategory' => $product->subcategory->slug]) }}" class="hover:text-blue-700">{{ $product->subcategory->name }}</a>
+            @endif
             <span>/</span>
             <span class="text-slate-800 font-semibold truncate">{{ $product->model_code }}</span>
         </nav>

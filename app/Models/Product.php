@@ -13,6 +13,7 @@ class Product extends Model
 
     protected $fillable = [
         'category_id',
+        'subcategory_id',
         'name',
         'model_code',
         'slug',
@@ -40,11 +41,18 @@ class Product extends Model
         'applications' => 'array',
         'is_featured' => 'boolean',
         'is_new' => 'boolean',
+        'category_id' => 'integer',
+        'subcategory_id' => 'integer',
     ];
 
     public function category(): BelongsTo
     {
-        return $this->belongsTo(Category::class);
+        return $this->belongsTo(Category::class, 'category_id');
+    }
+
+    public function subcategory(): BelongsTo
+    {
+        return $this->belongsTo(Category::class, 'subcategory_id');
     }
 
     public function inquiries(): HasMany
@@ -62,4 +70,3 @@ class Product extends Model
         return $query->where('is_featured', true);
     }
 }
-

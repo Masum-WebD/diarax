@@ -89,9 +89,14 @@
                                 <div class="text-[11px] text-slate-400 line-clamp-1 max-w-xs">{{ $prod->short_description }}</div>
                             </td>
                             <td class="py-3 px-4">
-                                <span class="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-slate-100 text-slate-700">
+                                <span class="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-slate-100 text-slate-700 block w-max">
                                     {{ $prod->category->name ?? 'General' }}
                                 </span>
+                                @if($prod->subcategory)
+                                    <span class="px-2 py-0.5 mt-1 rounded-full text-[10px] font-semibold bg-purple-50 text-purple-700 border border-purple-200 block w-max">
+                                        &rarr; {{ $prod->subcategory->name }}
+                                    </span>
+                                @endif
                             </td>
                             <td class="py-3 px-4">
                                 <div class="flex items-center space-x-1">
