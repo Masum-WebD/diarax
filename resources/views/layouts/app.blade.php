@@ -50,10 +50,10 @@
                         </a>
 
                         <!-- Dropdown Container -->
-                        <div class="absolute left-0 mt-1 w-[880px] bg-white rounded-2xl shadow-2xl border border-slate-200/90 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 transform group-hover:translate-y-0 translate-y-2 z-50 flex overflow-hidden">
+                        <div class="absolute left-0 mt-1 bg-white rounded-2xl shadow-2xl border border-slate-200/90 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 transform group-hover:translate-y-0 translate-y-2 z-50 flex overflow-hidden" style="width: 880px; max-width: calc(100vw - 2rem);">
                             
                             <!-- Tier 1: Main Categories List (Left Column, w-56) -->
-                            <div class="w-56 bg-slate-50/90 p-3 border-r border-slate-200/80 space-y-1 flex-shrink-0">
+                            <div class="w-56 bg-slate-50/90 p-3 border-r border-slate-200/80 space-y-1 flex-shrink-0" style="width: 224px; min-width: 224px;">
                                 <div class="px-2.5 py-1 text-[10px] font-extrabold uppercase tracking-wider text-slate-400">
                                     Clinical Divisions
                                 </div>
@@ -72,20 +72,20 @@
                             </div>
 
                             <!-- Tier 2 & Tier 3: Category Content Panels -->
-                            <div class="flex-1 bg-white min-h-[360px] flex flex-col justify-between overflow-hidden">
+                            <div class="flex-1 bg-white min-h-[360px] flex flex-col justify-between overflow-hidden" style="width: 656px; min-width: 656px;">
                                 @foreach($navCategories ?? [] as $navCat)
                                     @php
                                         $hasSubcategories = $navCat->subcategories->count() > 0;
                                         $directProds = $navCat->products->whereNull('subcategory_id');
                                     @endphp
-                                    <div id="cat-panel-{{ $navCat->id }}" class="category-product-panel {{ $loop->first ? 'flex' : 'hidden' }} flex-1 flex-col justify-between">
+                                    <div id="cat-panel-{{ $navCat->id }}" class="category-product-panel {{ $loop->first ? 'flex' : 'hidden' }} flex-1 flex-col justify-between h-full" style="width: 100%;">
                                         
                                         @if($hasSubcategories)
                                             <!-- Layout for Category WITH Subcategories (3-Tier Layout) -->
                                             <div class="flex flex-1 min-h-[310px]">
                                                 
                                                 <!-- Tier 2: Subcategories Column (Middle, w-52) -->
-                                                <div class="w-52 bg-slate-50/50 p-2.5 border-r border-slate-100 flex-shrink-0 space-y-1">
+                                                <div class="w-52 bg-slate-50/50 p-2.5 border-r border-slate-100 flex-shrink-0 space-y-1" style="width: 208px; min-width: 208px;">
                                                     <div class="px-2.5 py-1 text-[10px] font-extrabold uppercase tracking-wider text-slate-400 flex items-center justify-between">
                                                         <span>Subcategories</span>
                                                         <span class="text-[9px] text-blue-600 font-bold">({{ $navCat->subcategories->count() }})</span>
@@ -125,7 +125,7 @@
                                                 </div>
 
                                                 <!-- Tier 3: Products Column (Right, flex-1) -->
-                                                <div class="flex-1 p-4 bg-white flex flex-col justify-between overflow-hidden">
+                                                <div class="flex-1 p-4 bg-white flex flex-col justify-between overflow-hidden" style="width: 448px; min-width: 448px;">
                                                     <div>
                                                         @foreach($navCat->subcategories as $subCat)
                                                             @php
@@ -211,24 +211,29 @@
                                             </div>
                                         @else
                                             <!-- Layout for Category WITHOUT Subcategories (Direct 2-column Product Grid) -->
-                                            <div class="p-5 flex-1 flex flex-col justify-between">
+                                            <div class="p-5 flex-1 flex flex-col justify-between overflow-x-hidden" style="width: 100%;">
                                                 <div>
                                                     <div class="flex items-center justify-between pb-3 mb-3 border-b border-slate-100">
-                                                        <h4 class="font-heading font-bold text-xs uppercase tracking-wider text-slate-900">
-                                                            {{ $navCat->name }} ({{ $navCat->products->count() }} Models)
-                                                        </h4>
+                                                        <div>
+                                                            <h4 class="font-heading font-bold text-xs uppercase tracking-wider text-slate-900">
+                                                                {{ $navCat->name }}
+                                                            </h4>
+                                                            <p class="text-[10px] text-slate-400">
+                                                                {{ $navCat->products->count() }} equipment {{ Str::plural('model', $navCat->products->count()) }} available
+                                                            </p>
+                                                        </div>
                                                         <a href="{{ route('products.index', ['category' => $navCat->slug]) }}" class="text-[11px] font-bold text-blue-700 hover:underline">
                                                             View All Models &rarr;
                                                         </a>
                                                     </div>
 
-                                                    <div class="grid grid-cols-2 gap-3 max-h-[250px] overflow-y-auto pr-1">
+                                                    <div class="grid grid-cols-2 gap-3.5 max-h-[250px] overflow-y-auto overflow-x-hidden pr-1">
                                                         @forelse($navCat->products as $catProd)
-                                                            <a href="{{ route('products.show', $catProd->slug) }}" class="flex items-start p-2.5 rounded-xl hover:bg-blue-50/60 border border-slate-100 hover:border-blue-200 transition group/prod">
-                                                                <div class="w-12 h-12 rounded-lg bg-slate-100 overflow-hidden flex-shrink-0 mr-2.5 border border-slate-200/60 flex items-center justify-center p-0.5">
+                                                            <a href="{{ route('products.show', $catProd->slug) }}" class="flex items-center p-3 rounded-xl bg-slate-50/70 hover:bg-blue-50/60 border border-slate-100 hover:border-blue-200 transition group/prod">
+                                                                <div class="w-14 h-14 rounded-lg bg-white overflow-hidden flex-shrink-0 mr-3 border border-slate-200/60 flex items-center justify-center p-1">
                                                                     <img src="{{ $catProd->image }}" alt="{{ $catProd->name }}" class="w-full h-full object-contain">
                                                                 </div>
-                                                                <div class="min-w-0">
+                                                                <div class="min-w-0 flex-1">
                                                                     <span class="text-[10px] font-bold text-blue-700 font-mono block leading-tight">
                                                                         {{ $catProd->model_code }}
                                                                     </span>

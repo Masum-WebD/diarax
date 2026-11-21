@@ -174,11 +174,14 @@
 
 <!-- Add Category Modal -->
 <div id="addCategoryModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-xs hidden">
-    <div class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-7 shadow-2xl border border-slate-100 max-h-[90vh] overflow-y-auto">
+    <div class="bg-white rounded-3xl max-w-3xl w-full p-6 sm:p-7 shadow-2xl border border-slate-100 max-h-[90vh] overflow-y-auto" style="max-width: 780px; width: 95%;">
         <div class="flex items-center justify-between pb-3 border-b border-slate-100">
-            <h3 class="font-heading text-base font-bold text-slate-900">Add Category / Subcategory</h3>
-            <button type="button" onclick="closeAddCategoryModal()" class="text-slate-400 hover:text-slate-600 p-1">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+            <div>
+                <h3 class="font-heading text-base font-bold text-slate-900">Add Category / Subcategory</h3>
+                <p class="text-[11px] text-slate-500">Create a clinical division or link a subcategory to an existing parent</p>
+            </div>
+            <button type="button" onclick="closeAddCategoryModal()" class="w-9 h-9 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 hover:text-slate-800 flex items-center justify-center transition shadow-2xs cursor-pointer" title="Close Modal">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"/></svg>
             </button>
         </div>
 
@@ -186,75 +189,84 @@
             @csrf
 
             <!-- Parent Category Selection -->
-            <div>
-                <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">Parent Category</label>
-                <select name="parent_id" class="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none bg-slate-50">
-                    <option value="">-- None (This is a Main Category) --</option>
+            <div class="bg-blue-50/50 p-3.5 rounded-2xl border border-blue-100">
+                <label class="block text-xs font-bold uppercase tracking-wider text-slate-800 mb-1">
+                    Category Type & Parent Hierarchy
+                </label>
+                <select name="parent_id" class="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none bg-white font-medium">
+                    <option value="">-- None (This is a Top-Level Main Clinical Division) --</option>
                     @foreach($parentCategories as $parent)
-                        <option value="{{ $parent->id }}">{{ $parent->name }}</option>
+                        <option value="{{ $parent->id }}">↳ Subcategory under: {{ $parent->name }}</option>
                     @endforeach
                 </select>
-                <p class="text-[10px] text-slate-400 mt-1">Select a parent if this is a Subcategory (e.g. "Surgical Table" under "Surgery & Operating Theatres")</p>
+                <p class="text-[11px] text-slate-500 mt-1.5 flex items-center gap-1">
+                    <svg class="w-3.5 h-3.5 text-blue-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    Leave as <strong>None</strong> for a top-level division (e.g. "Surgery & Operation Theater"). Select a parent if this is a subcategory (e.g. "Surgical Tables").
+                </p>
             </div>
 
-            <div>
-                <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">Category / Subcategory Name *</label>
-                <input type="text" name="name" required placeholder="e.g. Hematology Analyzer or Surgical Tables" class="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none bg-slate-50">
-            </div>
+            <!-- 2 Columns: Name & Slug -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">Category / Subcategory Name *</label>
+                    <input type="text" name="name" required placeholder="e.g. Hematology Analyzer or Surgical Tables" class="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none bg-slate-50">
+                </div>
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
                     <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">URL Slug</label>
-                    <input type="text" name="slug" placeholder="e.g. hematology-analyzer" class="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none bg-slate-50 font-mono">
-                    <p class="text-[10px] text-slate-400 mt-0.5">Leave blank to auto-generate</p>
-                </div>
-
-                <div>
-                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">Sort Order</label>
-                    <input type="number" name="sort_order" value="0" class="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none bg-slate-50">
+                    <input type="text" name="slug" placeholder="e.g. hematology-analyzer" class="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none bg-slate-50 font-mono">
+                    <p class="text-[10px] text-slate-400 mt-0.5">Leave blank to auto-generate from name</p>
                 </div>
             </div>
 
+            <!-- 2 Columns: Sort Order & Status -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 items-center">
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">Display Sort Order</label>
+                    <input type="number" name="sort_order" value="0" class="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none bg-slate-50">
+                    <p class="text-[10px] text-slate-400 mt-0.5">Lower numbers display first (0, 1, 2...)</p>
+                </div>
+
+                <div class="pt-2 md:pt-4">
+                    <label class="flex items-center space-x-2.5 p-3 rounded-xl bg-slate-50 border border-slate-200/80 cursor-pointer hover:bg-slate-100 transition">
+                        <input type="checkbox" name="is_featured" id="add_cat_featured" value="1" checked class="w-4 h-4 rounded text-blue-600 focus:ring-blue-500 border-slate-300">
+                        <div>
+                            <span class="text-xs text-slate-800 font-bold block">Active in Navigation Menus</span>
+                            <span class="text-[10px] text-slate-500 block">Show in header mega-menus and catalog filters</span>
+                        </div>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Full Width: Short Description -->
             <div>
                 <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">Short Description</label>
-                <textarea name="short_description" rows="2" placeholder="Brief clinical description..." class="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none bg-slate-50"></textarea>
+                <textarea name="short_description" rows="2" placeholder="Brief clinical description or equipment overview..." class="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none bg-slate-50"></textarea>
             </div>
 
-            <!-- Image Selection: File Upload OR URL -->
-            <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-2.5">
+            <!-- Cover Image (Upload File OR URL side by side in 2 columns) -->
+            <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-3">
                 <label class="block text-xs font-bold uppercase tracking-wider text-slate-800">
                     Cover Image
                 </label>
 
-                <div class="space-y-2 text-xs">
-                    <div>
-                        <span class="text-[11px] font-semibold text-slate-700 block mb-1">Option 1: Upload from Computer</span>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="p-3 bg-white rounded-xl border border-slate-200/90">
+                        <span class="text-[11px] font-bold text-slate-700 block mb-1.5">Option 1: Upload from Computer</span>
                         <input type="file" name="image_file" accept="image/*" class="block w-full text-xs text-slate-500 file:mr-2 file:py-1 file:px-2.5 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
                     </div>
-                    <div class="relative flex py-1 items-center">
-                        <div class="flex-grow border-t border-slate-200"></div>
-                        <span class="flex-shrink mx-2 text-[10px] text-slate-400 uppercase font-bold">OR</span>
-                        <div class="flex-grow border-t border-slate-200"></div>
-                    </div>
-                    <div>
-                        <span class="text-[11px] font-semibold text-slate-700 block mb-1">Option 2: Image Web URL</span>
+                    <div class="p-3 bg-white rounded-xl border border-slate-200/90">
+                        <span class="text-[11px] font-bold text-slate-700 block mb-1.5">Option 2: Image Web URL</span>
                         <input type="url" name="image_url" placeholder="https://images.unsplash.com/..." class="w-full px-3 py-1.5 text-xs rounded-lg border border-slate-300 focus:ring-1 focus:ring-blue-600 focus:outline-none font-mono">
                     </div>
                 </div>
             </div>
 
-            <div class="flex items-center space-x-2 pt-1">
-                <input type="checkbox" name="is_featured" id="add_cat_featured" value="1" checked class="w-4 h-4 rounded text-blue-600 focus:ring-blue-500 border-slate-300">
-                <label for="add_cat_featured" class="text-xs text-slate-700 font-semibold cursor-pointer">
-                    Show in Navigation Menus & Highlights
-                </label>
-            </div>
-
-            <div class="pt-3 flex items-center justify-end space-x-2">
-                <button type="button" onclick="closeAddCategoryModal()" class="px-4 py-2 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100 transition">
+            <div class="pt-4 flex items-center justify-end space-x-2.5 border-t border-slate-100">
+                <button type="button" onclick="closeAddCategoryModal()" class="px-5 py-2.5 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100 transition cursor-pointer">
                     Cancel
                 </button>
-                <button type="submit" class="px-5 py-2 rounded-xl text-xs font-bold bg-blue-700 hover:bg-blue-800 text-white shadow-xs transition">
+                <button type="submit" class="px-6 py-2.5 rounded-xl text-xs font-bold bg-blue-700 hover:bg-blue-800 text-white shadow-xs transition cursor-pointer">
                     Save Category
                 </button>
             </div>
@@ -264,11 +276,14 @@
 
 <!-- Edit Category Modal -->
 <div id="editCategoryModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-xs hidden">
-    <div class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-7 shadow-2xl border border-slate-100 max-h-[90vh] overflow-y-auto">
+    <div class="bg-white rounded-3xl max-w-3xl w-full p-6 sm:p-7 shadow-2xl border border-slate-100 max-h-[90vh] overflow-y-auto" style="max-width: 780px; width: 95%;">
         <div class="flex items-center justify-between pb-3 border-b border-slate-100">
-            <h3 class="font-heading text-base font-bold text-slate-900">Edit Category / Subcategory</h3>
-            <button type="button" onclick="closeEditCategoryModal()" class="text-slate-400 hover:text-slate-600 p-1">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+            <div>
+                <h3 class="font-heading text-base font-bold text-slate-900">Edit Category / Subcategory</h3>
+                <p class="text-[11px] text-slate-500">Update category hierarchy, URL slug, and display settings</p>
+            </div>
+            <button type="button" onclick="closeEditCategoryModal()" class="w-9 h-9 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 hover:text-slate-800 flex items-center justify-center transition shadow-2xs cursor-pointer" title="Close Modal">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"/></svg>
             </button>
         </div>
 
@@ -277,31 +292,51 @@
             @method('PUT')
 
             <!-- Parent Category Selection -->
-            <div>
-                <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">Parent Category</label>
-                <select id="edit_cat_parent_id" name="parent_id" class="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none bg-slate-50">
-                    <option value="">-- None (This is a Main Category) --</option>
+            <div class="bg-blue-50/50 p-3.5 rounded-2xl border border-blue-100">
+                <label class="block text-xs font-bold uppercase tracking-wider text-slate-800 mb-1">
+                    Category Type & Parent Hierarchy
+                </label>
+                <select id="edit_cat_parent_id" name="parent_id" class="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none bg-white font-medium">
+                    <option value="">-- None (This is a Top-Level Main Clinical Division) --</option>
                     @foreach($parentCategories as $parent)
-                        <option value="{{ $parent->id }}">{{ $parent->name }}</option>
+                        <option value="{{ $parent->id }}">↳ Subcategory under: {{ $parent->name }}</option>
                     @endforeach
                 </select>
-                <p class="text-[10px] text-slate-400 mt-1">Leave as None for Main Categories, or select a Parent for Subcategories</p>
+                <p class="text-[11px] text-slate-500 mt-1.5 flex items-center gap-1">
+                    <svg class="w-3.5 h-3.5 text-blue-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    Leave as <strong>None</strong> for Main Categories, or select a Parent for Subcategories.
+                </p>
             </div>
 
-            <div>
-                <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">Category / Subcategory Name *</label>
-                <input type="text" id="edit_cat_name" name="name" required class="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none bg-slate-50">
-            </div>
-
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <!-- 2 Columns: Name & Slug -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">URL Slug *</label>
-                    <input type="text" id="edit_cat_slug" name="slug" required class="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none bg-slate-50 font-mono">
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">Category / Subcategory Name *</label>
+                    <input type="text" id="edit_cat_name" name="name" required class="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none bg-slate-50">
                 </div>
 
                 <div>
-                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">Sort Order</label>
-                    <input type="number" id="edit_cat_sort" name="sort_order" class="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none bg-slate-50">
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">URL Slug *</label>
+                    <input type="text" id="edit_cat_slug" name="slug" required class="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none bg-slate-50 font-mono">
+                </div>
+            </div>
+
+            <!-- 2 Columns: Sort Order & Status -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 items-center">
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">Display Sort Order</label>
+                    <input type="number" id="edit_cat_sort" name="sort_order" class="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none bg-slate-50">
+                    <p class="text-[10px] text-slate-400 mt-0.5">Lower numbers display first (0, 1, 2...)</p>
+                </div>
+
+                <div class="pt-2 md:pt-4">
+                    <label class="flex items-center space-x-2.5 p-3 rounded-xl bg-slate-50 border border-slate-200/80 cursor-pointer hover:bg-slate-100 transition">
+                        <input type="checkbox" name="is_featured" id="edit_cat_featured" value="1" class="w-4 h-4 rounded text-blue-600 focus:ring-blue-500 border-slate-300">
+                        <div>
+                            <span class="text-xs text-slate-800 font-bold block">Active in Navigation Menus</span>
+                            <span class="text-[10px] text-slate-500 block">Show in header mega-menus and catalog filters</span>
+                        </div>
+                    </label>
                 </div>
             </div>
 
@@ -318,41 +353,29 @@
                 </div>
             </div>
 
-            <!-- Image Selection: File Upload OR URL -->
-            <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-2.5">
+            <!-- Cover Image (Upload File OR URL side by side in 2 columns) -->
+            <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-3">
                 <label class="block text-xs font-bold uppercase tracking-wider text-slate-800">
                     Update Cover Image
                 </label>
 
-                <div class="space-y-2 text-xs">
-                    <div>
-                        <span class="text-[11px] font-semibold text-slate-700 block mb-1">Option 1: Upload New File</span>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="p-3 bg-white rounded-xl border border-slate-200/90">
+                        <span class="text-[11px] font-bold text-slate-700 block mb-1.5">Option 1: Upload New File</span>
                         <input type="file" name="image_file" accept="image/*" class="block w-full text-xs text-slate-500 file:mr-2 file:py-1 file:px-2.5 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
                     </div>
-                    <div class="relative flex py-1 items-center">
-                        <div class="flex-grow border-t border-slate-200"></div>
-                        <span class="flex-shrink mx-2 text-[10px] text-slate-400 uppercase font-bold">OR</span>
-                        <div class="flex-grow border-t border-slate-200"></div>
-                    </div>
-                    <div>
-                        <span class="text-[11px] font-semibold text-slate-700 block mb-1">Option 2: Image Web URL</span>
+                    <div class="p-3 bg-white rounded-xl border border-slate-200/90">
+                        <span class="text-[11px] font-bold text-slate-700 block mb-1.5">Option 2: Image Web URL</span>
                         <input type="url" id="edit_cat_url" name="image_url" placeholder="https://..." class="w-full px-3 py-1.5 text-xs rounded-lg border border-slate-300 focus:ring-1 focus:ring-blue-600 focus:outline-none font-mono">
                     </div>
                 </div>
             </div>
 
-            <div class="flex items-center space-x-2 pt-1">
-                <input type="checkbox" name="is_featured" id="edit_cat_featured" value="1" class="w-4 h-4 rounded text-blue-600 focus:ring-blue-500 border-slate-300">
-                <label for="edit_cat_featured" class="text-xs text-slate-700 font-semibold cursor-pointer">
-                    Show in Navigation Menus & Highlights
-                </label>
-            </div>
-
-            <div class="pt-3 flex items-center justify-end space-x-2">
-                <button type="button" onclick="closeEditCategoryModal()" class="px-4 py-2 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100 transition">
+            <div class="pt-4 flex items-center justify-end space-x-2.5 border-t border-slate-100">
+                <button type="button" onclick="closeEditCategoryModal()" class="px-5 py-2.5 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100 transition cursor-pointer">
                     Cancel
                 </button>
-                <button type="submit" class="px-5 py-2 rounded-xl text-xs font-bold bg-blue-700 hover:bg-blue-800 text-white shadow-xs transition">
+                <button type="submit" class="px-6 py-2.5 rounded-xl text-xs font-bold bg-blue-700 hover:bg-blue-800 text-white shadow-xs transition cursor-pointer">
                     Update Category
                 </button>
             </div>
