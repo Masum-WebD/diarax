@@ -61,25 +61,25 @@
         <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 text-center">
             
             <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200/80 hover:border-blue-300 hover:bg-white hover:shadow-md transition duration-200">
-                <div class="text-2xl sm:text-3xl font-extrabold font-heading text-slate-900">40+</div>
+                <div class="text-2xl sm:text-3xl font-extrabold font-heading text-slate-900">10+</div>
                 <div class="text-xs sm:text-sm font-semibold text-slate-700 mt-1">Product Groups</div>
                 <div class="text-[11px] text-slate-400 mt-0.5">Specialized Clinical Categories</div>
             </div>
 
             <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200/80 hover:border-blue-300 hover:bg-white hover:shadow-md transition duration-200">
-                <div class="text-2xl sm:text-3xl font-extrabold font-heading text-slate-900">250+</div>
+                <div class="text-2xl sm:text-3xl font-extrabold font-heading text-slate-900">40+</div>
                 <div class="text-xs sm:text-sm font-semibold text-slate-700 mt-1">Medical Models</div>
                 <div class="text-[11px] text-slate-400 mt-0.5">Precision Certified Equipment</div>
             </div>
 
             <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200/80 hover:border-blue-300 hover:bg-white hover:shadow-md transition duration-200">
-                <div class="text-2xl sm:text-3xl font-extrabold font-heading text-slate-900">80+</div>
+                <div class="text-2xl sm:text-3xl font-extrabold font-heading text-slate-900">50+</div>
                 <div class="text-xs sm:text-sm font-semibold text-slate-700 mt-1">Countries Served</div>
                 <div class="text-[11px] text-slate-400 mt-0.5">Worldwide Hospital Installations</div>
             </div>
 
             <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200/80 hover:border-blue-300 hover:bg-white hover:shadow-md transition duration-200">
-                <div class="text-2xl sm:text-3xl font-extrabold font-heading text-blue-700">20+</div>
+                <div class="text-2xl sm:text-3xl font-extrabold font-heading text-blue-700">10+</div>
                 <div class="text-xs sm:text-sm font-semibold text-slate-700 mt-1">Years in Korea</div>
                 <div class="text-[11px] text-slate-400 mt-0.5">Seoul Biomedical Innovation</div>
             </div>
@@ -133,7 +133,7 @@
             <!-- Right: Facility / Equipment Image Card (Home Page Image Change) -->
             <div class="lg:col-span-5">
                 <div class="relative rounded-2xl overflow-hidden border border-slate-200 shadow-md group">
-                    <img src="https://images.unsplash.com/photo-1582719471384-894fbb16e074?auto=format&fit=crop&w=1000&q=80" alt="Laboratory & Medical Technology" class="w-full h-72 sm:h-80 object-cover group-hover:scale-105 transition-transform duration-500">
+                    <img src="{{ asset('images/home-about.jpeg') }}" alt="Laboratory & Medical Technology" class="w-full h-72 sm:h-80 object-cover group-hover:scale-105 transition-transform duration-500">
                     <div class="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-transparent to-transparent"></div>
                     <div class="absolute bottom-4 left-4 right-4 text-white">
                         <span class="text-[10px] font-bold uppercase tracking-widest text-blue-300">Seoul Headquarters</span>
@@ -141,11 +141,7 @@
                     </div>
                 </div>
             </div>
-                    <img 
-                        src="https://images.unsplash.com/photo-1516549655169-df83a0774514?auto=format&fit=crop&w=800&q=80" 
-                        alt="DIARAX South Korea Medical Facility" 
-                        class="w-full h-72 sm:h-80 object-cover group-hover:scale-105 transition-transform duration-300"
-                    >
+                   
                     <div class="absolute bottom-4 left-4 right-4 p-3.5 rounded-xl bg-white/95 backdrop-blur-md border border-white/80 shadow-xs flex items-center justify-between">
                         <div>
                             <span class="text-[10px] font-bold uppercase tracking-wider text-blue-700 block">Headquarters & Manufacturing</span>

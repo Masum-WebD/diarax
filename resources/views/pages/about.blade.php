@@ -41,7 +41,7 @@
 
         <div class="lg:col-span-6">
             <div class="rounded-3xl overflow-hidden shadow-lg border border-slate-200">
-                <img src="https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?auto=format&fit=crop&w=1000&q=80" alt="Hospital medical systems" class="w-full h-80 sm:h-96 object-cover">
+                <img src="{{ asset('images/about.jpeg') }}" alt="Hospital medical systems" class="w-full h-80 sm:h-96 object-cover">
             </div>
         </div>
     </div>
