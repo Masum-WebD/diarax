@@ -30,9 +30,14 @@ class AppServiceProvider extends ServiceProvider
                         ->with([
                             'subcategories' => function ($query) {
                                 $query->orderBy('sort_order', 'asc')
-                                    ->with(['products' => function ($pq) {
-                                        $pq->where('status', 'active')->orderBy('id', 'asc');
-                                    }]);
+                                    ->with([
+                                        'subcategoryProducts' => function ($pq) {
+                                            $pq->where('status', 'active')->orderBy('id', 'asc');
+                                        },
+                                        'products' => function ($pq) {
+                                            $pq->where('status', 'active')->orderBy('id', 'asc');
+                                        }
+                                    ]);
                             },
                             'products' => function ($query) {
                                 $query->where('status', 'active')->orderBy('id', 'asc');

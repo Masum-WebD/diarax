@@ -50,10 +50,10 @@
                         </a>
 
                         <!-- Dropdown Container -->
-                        <div class="absolute left-0 mt-1 w-[820px] bg-white rounded-2xl shadow-2xl border border-slate-200/90 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 transform group-hover:translate-y-0 translate-y-2 z-50 flex overflow-hidden">
+                        <div class="absolute left-0 mt-1 w-[880px] bg-white rounded-2xl shadow-2xl border border-slate-200/90 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 transform group-hover:translate-y-0 translate-y-2 z-50 flex overflow-hidden">
                             
-                            <!-- Left: Categories List -->
-                            <div class="w-64 bg-slate-50/80 p-3 border-r border-slate-200/80 space-y-1">
+                            <!-- Tier 1: Main Categories List (Left Column, w-56) -->
+                            <div class="w-56 bg-slate-50/90 p-3 border-r border-slate-200/80 space-y-1 flex-shrink-0">
                                 <div class="px-2.5 py-1 text-[10px] font-extrabold uppercase tracking-wider text-slate-400">
                                     Clinical Divisions
                                 </div>
@@ -71,128 +71,194 @@
                                 @endforeach
                             </div>
 
-                            <!-- Right: Products & Subcategories for Hovered Category -->
-                            <div class="flex-1 p-5 bg-white min-h-[350px] flex flex-col justify-between">
-                                <div>
-                                    @foreach($navCategories ?? [] as $navCat)
-                                        <div id="cat-panel-{{ $navCat->id }}" class="category-product-panel {{ $loop->first ? 'block' : 'hidden' }}">
-                                            <div class="flex items-center justify-between pb-3 mb-3 border-b border-slate-100">
-                                                <div>
-                                                    <h4 class="font-heading font-bold text-xs uppercase tracking-wider text-slate-900">
-                                                        {{ $navCat->name }}
-                                                    </h4>
-                                                    @if($navCat->subcategories->count() > 0)
-                                                        <span class="text-[10px] text-slate-400">
-                                                            {{ $navCat->subcategories->count() }} Subcategories
-                                                        </span>
+                            <!-- Tier 2 & Tier 3: Category Content Panels -->
+                            <div class="flex-1 bg-white min-h-[360px] flex flex-col justify-between overflow-hidden">
+                                @foreach($navCategories ?? [] as $navCat)
+                                    @php
+                                        $hasSubcategories = $navCat->subcategories->count() > 0;
+                                        $directProds = $navCat->products->whereNull('subcategory_id');
+                                    @endphp
+                                    <div id="cat-panel-{{ $navCat->id }}" class="category-product-panel {{ $loop->first ? 'flex' : 'hidden' }} flex-1 flex-col justify-between">
+                                        
+                                        @if($hasSubcategories)
+                                            <!-- Layout for Category WITH Subcategories (3-Tier Layout) -->
+                                            <div class="flex flex-1 min-h-[310px]">
+                                                
+                                                <!-- Tier 2: Subcategories Column (Middle, w-52) -->
+                                                <div class="w-52 bg-slate-50/50 p-2.5 border-r border-slate-100 flex-shrink-0 space-y-1">
+                                                    <div class="px-2.5 py-1 text-[10px] font-extrabold uppercase tracking-wider text-slate-400 flex items-center justify-between">
+                                                        <span>Subcategories</span>
+                                                        <span class="text-[9px] text-blue-600 font-bold">({{ $navCat->subcategories->count() }})</span>
+                                                    </div>
+
+                                                    @foreach($navCat->subcategories as $subCat)
+                                                        @php
+                                                            $subProds = $subCat->subcategoryProducts->isNotEmpty() ? $subCat->subcategoryProducts : $subCat->products;
+                                                        @endphp
+                                                        <div 
+                                                            class="subcat-hover-item subcat-item-for-cat-{{ $navCat->id }} flex items-center justify-between px-2.5 py-2 rounded-xl text-xs font-medium cursor-pointer transition {{ $loop->first ? 'bg-blue-50 text-blue-700 font-bold shadow-2xs' : 'text-slate-700 hover:bg-slate-100 hover:text-blue-700' }}"
+                                                            data-cat-id="{{ $navCat->id }}"
+                                                            data-sub-id="{{ $subCat->id }}"
+                                                            onmouseenter="switchMegaSubcategory({{ $navCat->id }}, {{ $subCat->id }}, this)"
+                                                        >
+                                                            <span class="truncate flex-1">{{ $subCat->name }}</span>
+                                                            <span class="subcat-badge text-[10px] px-1.5 py-0.2 rounded-full {{ $loop->first ? 'bg-blue-200/70 text-blue-800' : 'bg-slate-200/60 text-slate-600' }} ml-1.5 flex-shrink-0 font-mono">
+                                                                {{ $subProds->count() }}
+                                                            </span>
+                                                        </div>
+                                                    @endforeach
+
+                                                    {{-- Direct products not in any subcategory --}}
+                                                    @if($directProds->count() > 0)
+                                                        <div 
+                                                            class="subcat-hover-item subcat-item-for-cat-{{ $navCat->id }} flex items-center justify-between px-2.5 py-2 rounded-xl text-xs font-medium cursor-pointer transition text-slate-700 hover:bg-slate-100 hover:text-blue-700"
+                                                            data-cat-id="{{ $navCat->id }}"
+                                                            data-sub-id="direct-{{ $navCat->id }}"
+                                                            onmouseenter="switchMegaSubcategory({{ $navCat->id }}, 'direct-{{ $navCat->id }}', this)"
+                                                        >
+                                                            <span class="truncate flex-1">General Models</span>
+                                                            <span class="subcat-badge text-[10px] px-1.5 py-0.2 rounded-full bg-slate-200/60 text-slate-600 ml-1.5 flex-shrink-0 font-mono">
+                                                                {{ $directProds->count() }}
+                                                            </span>
+                                                        </div>
                                                     @endif
                                                 </div>
-                                                <a href="{{ route('products.index', ['category' => $navCat->slug]) }}" class="text-[11px] font-bold text-blue-700 hover:underline">
-                                                    View All Models &rarr;
-                                                </a>
-                                            </div>
 
-                                            @if($navCat->subcategories->count() > 0)
-                                                <!-- Category with Subcategories View -->
-                                                <div class="space-y-3 max-h-[270px] overflow-y-auto pr-1">
-                                                    @foreach($navCat->subcategories as $subCat)
-                                                        <div class="p-2.5 rounded-xl border border-slate-100 bg-slate-50/50 hover:bg-blue-50/20 transition">
-                                                            <div class="flex items-center justify-between mb-2">
-                                                                <a href="{{ route('products.index', ['category' => $navCat->slug, 'subcategory' => $subCat->slug]) }}" class="font-bold text-xs text-slate-800 hover:text-blue-700 flex items-center gap-1.5">
-                                                                    <span class="w-1.5 h-1.5 rounded-full bg-blue-600"></span>
-                                                                    {{ $subCat->name }}
-                                                                </a>
-                                                                <a href="{{ route('products.index', ['category' => $navCat->slug, 'subcategory' => $subCat->slug]) }}" class="text-[10px] font-semibold text-blue-600 hover:underline">
-                                                                    Explore &rarr;
-                                                                </a>
-                                                            </div>
+                                                <!-- Tier 3: Products Column (Right, flex-1) -->
+                                                <div class="flex-1 p-4 bg-white flex flex-col justify-between overflow-hidden">
+                                                    <div>
+                                                        @foreach($navCat->subcategories as $subCat)
+                                                            @php
+                                                                $subProds = $subCat->subcategoryProducts->isNotEmpty() ? $subCat->subcategoryProducts : $subCat->products;
+                                                            @endphp
+                                                            <div id="sub-panel-{{ $navCat->id }}-{{ $subCat->id }}" class="subcat-product-panel subcat-panel-cat-{{ $navCat->id }} {{ $loop->first ? 'block' : 'hidden' }}">
+                                                                <div class="flex items-center justify-between pb-2.5 mb-3 border-b border-slate-100">
+                                                                    <div>
+                                                                        <h4 class="font-heading font-bold text-xs uppercase tracking-wider text-slate-900">
+                                                                            {{ $subCat->name }}
+                                                                        </h4>
+                                                                        <p class="text-[10px] text-slate-400">
+                                                                            {{ $subProds->count() }} equipment {{ Str::plural('model', $subProds->count()) }} available
+                                                                        </p>
+                                                                    </div>
+                                                                    <a href="{{ route('products.index', ['category' => $navCat->slug, 'subcategory' => $subCat->slug]) }}" class="text-[11px] font-bold text-blue-700 hover:underline">
+                                                                        View All {{ $subCat->name }} &rarr;
+                                                                    </a>
+                                                                </div>
 
-                                                            @if($subCat->products->count() > 0)
-                                                                <div class="grid grid-cols-2 gap-2">
-                                                                    @foreach($subCat->products as $subProd)
-                                                                        <a href="{{ route('products.show', $subProd->slug) }}" class="flex items-center p-1.5 bg-white rounded-lg border border-slate-200/70 hover:border-blue-300 hover:shadow-2xs transition group/prod">
-                                                                            <div class="w-10 h-10 rounded-md bg-slate-50 overflow-hidden flex-shrink-0 mr-2 border border-slate-100 flex items-center justify-center p-0.5">
+                                                                <div class="grid grid-cols-2 gap-2.5 max-h-[240px] overflow-y-auto pr-1">
+                                                                    @forelse($subProds as $subProd)
+                                                                        <a href="{{ route('products.show', $subProd->slug) }}" class="flex items-start p-2 rounded-xl bg-slate-50/60 hover:bg-blue-50/50 border border-slate-100 hover:border-blue-200 transition group/prod">
+                                                                            <div class="w-12 h-12 rounded-lg bg-white overflow-hidden flex-shrink-0 mr-2.5 border border-slate-200/60 flex items-center justify-center p-0.5">
                                                                                 <img src="{{ $subProd->image }}" alt="{{ $subProd->name }}" class="w-full h-full object-contain">
                                                                             </div>
                                                                             <div class="min-w-0">
-                                                                                <span class="text-[9px] font-bold text-blue-700 font-mono block leading-tight">
+                                                                                <span class="text-[10px] font-bold text-blue-700 font-mono block leading-tight">
                                                                                     {{ $subProd->model_code }}
                                                                                 </span>
-                                                                                <div class="text-[11px] font-medium text-slate-800 truncate group-hover/prod:text-blue-700 leading-snug">
+                                                                                <div class="text-xs font-semibold text-slate-800 truncate group-hover/prod:text-blue-700 leading-snug">
                                                                                     {{ $subProd->name }}
+                                                                                </div>
+                                                                            </div>
+                                                                        </a>
+                                                                    @empty
+                                                                        <div class="col-span-2 text-center py-8 text-slate-400 text-xs">
+                                                                            No equipment models currently listed in this subcategory.
+                                                                        </div>
+                                                                    @endforelse
+                                                                </div>
+                                                            </div>
+                                                        @endforeach
+
+                                                        @if($directProds->count() > 0)
+                                                            <div id="sub-panel-{{ $navCat->id }}-direct-{{ $navCat->id }}" class="subcat-product-panel subcat-panel-cat-{{ $navCat->id }} hidden">
+                                                                <div class="flex items-center justify-between pb-2.5 mb-3 border-b border-slate-100">
+                                                                    <div>
+                                                                        <h4 class="font-heading font-bold text-xs uppercase tracking-wider text-slate-900">
+                                                                            General {{ $navCat->name }} Models
+                                                                        </h4>
+                                                                        <p class="text-[10px] text-slate-400">
+                                                                            {{ $directProds->count() }} general equipment models
+                                                                        </p>
+                                                                    </div>
+                                                                    <a href="{{ route('products.index', ['category' => $navCat->slug]) }}" class="text-[11px] font-bold text-blue-700 hover:underline">
+                                                                        View Category &rarr;
+                                                                    </a>
+                                                                </div>
+
+                                                                <div class="grid grid-cols-2 gap-2.5 max-h-[240px] overflow-y-auto pr-1">
+                                                                    @foreach($directProds as $dirProd)
+                                                                        <a href="{{ route('products.show', $dirProd->slug) }}" class="flex items-start p-2 rounded-xl bg-slate-50/60 hover:bg-blue-50/50 border border-slate-100 hover:border-blue-200 transition group/prod">
+                                                                            <div class="w-12 h-12 rounded-lg bg-white overflow-hidden flex-shrink-0 mr-2.5 border border-slate-200/60 flex items-center justify-center p-0.5">
+                                                                                <img src="{{ $dirProd->image }}" alt="{{ $dirProd->name }}" class="w-full h-full object-contain">
+                                                                            </div>
+                                                                            <div class="min-w-0">
+                                                                                <span class="text-[10px] font-bold text-blue-700 font-mono block leading-tight">
+                                                                                    {{ $dirProd->model_code }}
+                                                                                </span>
+                                                                                <div class="text-xs font-semibold text-slate-800 truncate group-hover/prod:text-blue-700 leading-snug">
+                                                                                    {{ $dirProd->name }}
                                                                                 </div>
                                                                             </div>
                                                                         </a>
                                                                     @endforeach
                                                                 </div>
-                                                            @else
-                                                                <p class="text-[10px] text-slate-400 italic">No models currently listed.</p>
-                                                            @endif
-                                                        </div>
-                                                    @endforeach
-
-                                                    {{-- Direct products under main category (if not assigned to a subcategory) --}}
-                                                    @php
-                                                        $directProds = $navCat->products->whereNull('subcategory_id');
-                                                    @endphp
-                                                    @if($directProds->count() > 0)
-                                                        <div class="p-2.5 rounded-xl border border-slate-100 bg-white">
-                                                            <div class="text-[11px] font-bold text-slate-600 uppercase tracking-wider mb-2">
-                                                                General Equipment
                                                             </div>
-                                                            <div class="grid grid-cols-2 gap-2">
-                                                                @foreach($directProds as $dirProd)
-                                                                    <a href="{{ route('products.show', $dirProd->slug) }}" class="flex items-center p-1.5 bg-slate-50/60 rounded-lg border border-slate-200/70 hover:border-blue-300 hover:shadow-2xs transition group/prod">
-                                                                        <div class="w-10 h-10 rounded-md bg-white overflow-hidden flex-shrink-0 mr-2 border border-slate-100 flex items-center justify-center p-0.5">
-                                                                            <img src="{{ $dirProd->image }}" alt="{{ $dirProd->name }}" class="w-full h-full object-contain">
-                                                                        </div>
-                                                                        <div class="min-w-0">
-                                                                            <span class="text-[9px] font-bold text-blue-700 font-mono block leading-tight">
-                                                                                {{ $dirProd->model_code }}
-                                                                            </span>
-                                                                            <div class="text-[11px] font-medium text-slate-800 truncate group-hover/prod:text-blue-700 leading-snug">
-                                                                                {{ $dirProd->name }}
-                                                                            </div>
-                                                                        </div>
-                                                                    </a>
-                                                                @endforeach
-                                                            </div>
-                                                        </div>
-                                                    @endif
+                                                        @endif
+                                                    </div>
                                                 </div>
-                                            @else
-                                                <!-- Category without Subcategories: Direct Products Grid -->
-                                                <div class="grid grid-cols-2 gap-3 max-h-[270px] overflow-y-auto pr-1">
-                                                    @forelse($navCat->products as $catProd)
-                                                        <a href="{{ route('products.show', $catProd->slug) }}" class="flex items-start p-2 rounded-xl hover:bg-blue-50/60 border border-slate-100 hover:border-blue-200 transition group/prod">
-                                                            <div class="w-12 h-12 rounded-lg bg-slate-100 overflow-hidden flex-shrink-0 mr-2.5 border border-slate-200/60 flex items-center justify-center p-0.5">
-                                                                <img src="{{ $catProd->image }}" alt="{{ $catProd->name }}" class="w-full h-full object-contain">
-                                                            </div>
-                                                            <div class="min-w-0">
-                                                                <span class="text-[10px] font-bold text-blue-700 font-mono block leading-tight">
-                                                                    {{ $catProd->model_code }}
-                                                                </span>
-                                                                <div class="text-xs font-semibold text-slate-800 truncate group-hover/prod:text-blue-700 leading-snug">
-                                                                    {{ $catProd->name }}
-                                                                </div>
-                                                            </div>
+
+                                            </div>
+                                        @else
+                                            <!-- Layout for Category WITHOUT Subcategories (Direct 2-column Product Grid) -->
+                                            <div class="p-5 flex-1 flex flex-col justify-between">
+                                                <div>
+                                                    <div class="flex items-center justify-between pb-3 mb-3 border-b border-slate-100">
+                                                        <h4 class="font-heading font-bold text-xs uppercase tracking-wider text-slate-900">
+                                                            {{ $navCat->name }} ({{ $navCat->products->count() }} Models)
+                                                        </h4>
+                                                        <a href="{{ route('products.index', ['category' => $navCat->slug]) }}" class="text-[11px] font-bold text-blue-700 hover:underline">
+                                                            View All Models &rarr;
                                                         </a>
-                                                    @empty
-                                                        <div class="col-span-2 text-center py-6 text-slate-400 text-xs">
-                                                            No models currently listed in this category.
-                                                        </div>
-                                                    @endforelse
-                                                </div>
-                                            @endif
-                                        </div>
-                                    @endforeach
-                                </div>
+                                                    </div>
 
-                                <div class="pt-3 border-t border-slate-100 text-right">
-                                    <a href="{{ route('products.index') }}" class="text-xs font-bold text-blue-700 hover:underline">
-                                        Browse Complete Catalog &rarr;
-                                    </a>
-                                </div>
+                                                    <div class="grid grid-cols-2 gap-3 max-h-[250px] overflow-y-auto pr-1">
+                                                        @forelse($navCat->products as $catProd)
+                                                            <a href="{{ route('products.show', $catProd->slug) }}" class="flex items-start p-2.5 rounded-xl hover:bg-blue-50/60 border border-slate-100 hover:border-blue-200 transition group/prod">
+                                                                <div class="w-12 h-12 rounded-lg bg-slate-100 overflow-hidden flex-shrink-0 mr-2.5 border border-slate-200/60 flex items-center justify-center p-0.5">
+                                                                    <img src="{{ $catProd->image }}" alt="{{ $catProd->name }}" class="w-full h-full object-contain">
+                                                                </div>
+                                                                <div class="min-w-0">
+                                                                    <span class="text-[10px] font-bold text-blue-700 font-mono block leading-tight">
+                                                                        {{ $catProd->model_code }}
+                                                                    </span>
+                                                                    <div class="text-xs font-semibold text-slate-800 truncate group-hover/prod:text-blue-700 leading-snug">
+                                                                        {{ $catProd->name }}
+                                                                    </div>
+                                                                </div>
+                                                            </a>
+                                                        @empty
+                                                            <div class="col-span-2 text-center py-8 text-slate-400 text-xs">
+                                                                No models currently listed in this category.
+                                                            </div>
+                                                        @endforelse
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        @endif
+
+                                        <!-- Bottom Footer Bar -->
+                                        <div class="px-5 py-2.5 bg-slate-50 border-t border-slate-100 flex items-center justify-between text-[11px]">
+                                            <span class="text-slate-500 font-medium">
+                                                {{ $navCat->name }} &bull; Engineered to Global Standards
+                                            </span>
+                                            <a href="{{ route('products.index', ['category' => $navCat->slug]) }}" class="font-bold text-blue-700 hover:underline">
+                                                Explore Full {{ $navCat->name }} Portfolio &rarr;
+                                            </a>
+                                        </div>
+
+                                    </div>
+                                @endforeach
                             </div>
 
                         </div>
@@ -479,17 +545,59 @@
             itemEl.classList.remove('text-slate-700');
             itemEl.classList.add('bg-blue-50', 'text-blue-700', 'font-bold');
 
-            // Hide all product panels
+            // Hide all category panels
             document.querySelectorAll('.category-product-panel').forEach(panel => {
+                panel.classList.add('hidden');
+                panel.classList.remove('flex');
+            });
+
+            // Show active category panel
+            const activePanel = document.getElementById('cat-panel-' + catId);
+            if (activePanel) {
+                activePanel.classList.remove('hidden');
+                activePanel.classList.add('flex');
+
+                // If this category has subcategories, activate the first one
+                const firstSubItem = activePanel.querySelector('.subcat-item-for-cat-' + catId);
+                if (firstSubItem) {
+                    const subId = firstSubItem.getAttribute('data-sub-id');
+                    switchMegaSubcategory(catId, subId, firstSubItem);
+                }
+            }
+        }
+
+        function switchMegaSubcategory(catId, subId, itemEl) {
+            // Remove active classes on all subcategory items in this category
+            document.querySelectorAll('.subcat-item-for-cat-' + catId).forEach(el => {
+                el.classList.remove('bg-blue-50', 'text-blue-700', 'font-bold', 'shadow-2xs');
+                el.classList.add('text-slate-700');
+                const badge = el.querySelector('.subcat-badge');
+                if (badge) {
+                    badge.classList.remove('bg-blue-200/70', 'text-blue-800');
+                    badge.classList.add('bg-slate-200/60', 'text-slate-600');
+                }
+            });
+
+            // Add active class to hovered subcategory item
+            itemEl.classList.remove('text-slate-700');
+            itemEl.classList.add('bg-blue-50', 'text-blue-700', 'font-bold', 'shadow-2xs');
+            const activeBadge = itemEl.querySelector('.subcat-badge');
+            if (activeBadge) {
+                activeBadge.classList.remove('bg-slate-200/60', 'text-slate-600');
+                activeBadge.classList.add('bg-blue-200/70', 'text-blue-800');
+            }
+
+            // Hide all subcategory product panels in this category
+            document.querySelectorAll('.subcat-panel-cat-' + catId).forEach(panel => {
                 panel.classList.add('hidden');
                 panel.classList.remove('block');
             });
 
-            // Show active product panel
-            const activePanel = document.getElementById('cat-panel-' + catId);
-            if (activePanel) {
-                activePanel.classList.remove('hidden');
-                activePanel.classList.add('block');
+            // Show target subcategory product panel
+            const targetPanel = document.getElementById('sub-panel-' + catId + '-' + subId);
+            if (targetPanel) {
+                targetPanel.classList.remove('hidden');
+                targetPanel.classList.add('block');
             }
         }
     </script>
